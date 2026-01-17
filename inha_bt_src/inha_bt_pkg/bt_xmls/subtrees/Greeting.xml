@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="Greeting">
+        <Sequence>
+            <!-- Notice to Person -->
+            <WaitPersonDetected min_interval_ms="8000"/>
+            <MakeNavGoal frame="map" x="1.2" y="0.5" yaw="1.57" goal="{door_pose}"/>
+            <GoToPose goal="{door_pose}"/>
+            <Speak text="I heard the doorbell. I am going to the door."/>
+
+            <!-- 1) 인사 및 이름 묻기 -->
+            <Speak text="Hello! Welcome to our party. May I ask your name and your favorite drink?"/>
+            <Listen heard_text="{@heard_text}"/>
+            <Vlm heard_text="{@heard_text}" prompt="Only get name" vlm_mode="1" generated_text="{@vlm_output}"/>
+            
+            <!-- 2) 알림: 사진 촬영 안내 -->
+            <Speak text="I will take your picture now. Please look at me."/>
+            <FaceSaver person_name="{person1_name}" num_images="5" timeout_ms="3000"/>
+            <Mapstore person="{@vlm_output}" person_id="{@person_id}"/>
+
+        </Sequence>
+    </BehaviorTree>
+</root>

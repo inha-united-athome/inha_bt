@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="main">
+          <Sequence>
+          <WaitPersonDetected timeout_ms="8000"/>
+          <Speak text="I'll take your picture now. please look at me"/>
+          <FaceSaver person_name="minho" num_images="5" timeout_ms="3000"/>
+          <Mapstore person="minho" person_id="1" favorite_drink="yogurt"/>
+          <Vlm heard_text="" prompt="Only get name" vlm_mode="4" generated_text="{@vlm_output}"/>
+          <Speak text="{@vlm_output}"/>
+        </Sequence>
+    </BehaviorTree>
+</root>

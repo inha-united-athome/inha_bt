@@ -1,0 +1,10 @@
+# Goal
+int32 timeout_ms # 감지 시간 (크게 잡히고 움직임 없음)
+
+---
+# Result
+bool success # 사람 감지 여부 
+
+---
+# Feedback
+string state # (WAITING / DETECTED / TIMEOUT)

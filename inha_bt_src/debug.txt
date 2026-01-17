@@ -1,0 +1,15 @@
+[예시만] restaurant_main 디버깅
+
+# (1) 손든 사람 goal 포즈 1회 발행 (Waving이 output으로 쓸 값)
+#  - 토픽: /human/hand_up_goal (geometry_msgs/msg/PoseStamped)
+#  - frame_id는 무조건 "map"
+ros2 topic pub --once /human/hand_up_goal geometry_msgs/msg/PoseStamped \
+"{header: {frame_id: 'map'}, pose: {position: {x: 2.8, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}"
+
+
+# (2) 손들기 상태 트리거 1회 발행 (Waving SUCCESS 유도)
+#  - 토픽: /human/states (std_msgs/msg/String)
+#  - 문자열 안에 HAND_UP_LEFT 또는 HAND_UP_RIGHT 가 '포함'되면 detected=true
+#  - 예시 포맷: "P0:HAND_UP_LEFT, P1:UNKNOWN"
+ros2 topic pub --once /human/states std_msgs/msg/String \
+"{data: 'P0:HAND_UP_LEFT, P1:UNKNOWN'}"

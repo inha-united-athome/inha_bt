@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="main">
+        <Sequence>
+            <Script code="person_id := 1"/>
+            <SubTree ID="Each_person" node="{@node}" person_id="{@person_id}"/>
+            <!-- <SubTree ID="GoTo" node="{@node}" location="door" lifecycle="{@lifecycle}"/>  -->
+            <Script code="person_id := 2"/>
+            <SubTree ID="Each_person" node="{@node}" person_id="{@person_id}"/>
+            <Vlm node="{@node}" heard_text="" prompt="" vlm_mode="4" generated_text="{@vlm_output}"/>
+            <Speak  node="{@node}" text="{@vlm_output}"/>
+        </Sequence>
+    </BehaviorTree>
+</root>

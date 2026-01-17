@@ -1,0 +1,13 @@
+# Goal
+string person_name # 사람 이름 -> 디렉토리 저장
+int32 num_images # 찍을 사진 이미지 갯수
+int32 timeout_ms # 몇초동안 찍을지
+
+---
+# Result
+bool success # -> 성공 여부
+string message # (실패 사유/로그)
+
+---
+# Feedback
+string state # (“WAITING_PERSON”, “CAPTURING”, “SAVING”…)

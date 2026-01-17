@@ -1,0 +1,9 @@
+# Goal
+float32 timeout_sec
+---
+# Result
+bool success
+string text
+---
+# Feedback
+string state

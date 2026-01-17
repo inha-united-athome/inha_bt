@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">    
+    <BehaviorTree ID="main">
+      <Sequence>
+          <!-- <Mapstore person="minho" favorite_drink="Capuccino" person_id="1"/> -->
+
+<!-- #Scene 1. 손님 감지 및 이동 (Start) -->
+          <!-- <WaitPersonDetected min_interval_ms="8000"/> -->
+          <MakeNavGoal frame="map" x="1.2" y="0.5" yaw="1.57" goal="{door_pose}"/>
+          <!-- <GoToPose goal="{door_pose}"/> -->
+          <Speak text="I heard the doorbell. I am going to the door."/>
+
+
+<!-- #Scene 2. 손님맞이 및 가방 수령 (Reception & Bag Handover) -->
+            <!-- 1) 인사 및 이름 묻기 -->
+          <Speak text="Hello! Welcome to our party. May I ask your name and your favorite drink?"/>
+          <Listen heard_text="{@heard_text}"/>
+          <Script code="@text := 'Extract ONLY the person name from the users sentence. Output ONLY the name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: My name is Minho and I like cola. -> Minho'"/>
+          <VlmQuery mode="1" text="My name is minho and my favorite drink is cappuccino" prompt="{@text}" generated_text="{@person_name}"/>
+          <Script code="@text := 'Extract ONLY the favorite drink from the users sentence. Output ONLY the drink name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: I am Minho and I like cola. -> cola'"/>
+          <VlmQuery mode="1" text="My name is minho and my favorite drink is cappuccino" prompt="{@text}" generated_text="{@favorite_drink}"/>
+          <!-- <Mapstore person="{@person_name}" favorite_drink="{@favorite_drink}" person_id="2"/> -->
+
+            <!-- 2) 알림: 사진 촬영 안내 -->
+          <Speak text="I will take your picture now. Please look at me."/>
+          <!-- <FaceSaver person_name="{@person_name}" num_images="5" timeout_ms="3000"/> -->
+
+          <Script code="
+            @text := 'Thank you, ' + @person_name + ', I see you are holding a bag. Let me help you with that.'"/> 
+          <Speak text="{@text}"/> 
+          <!-- <Motion mode="receive_bag_1"/> --> 
+          <Speak text="Please place the bag in my hand."/>
+          <!-- <Motion mode="receive_bag_2"/> -->
+
+<!-- #Scene 3. 안내 및 착석 (Guiding & Seating)  -->
+          <Speak text="Thank you. I have received the bag. Please follow me to the living room"/>         
+          <MakeNavGoal frame="map" x="1.2" y="0.5" yaw="1.57" goal="{livingroom_pose}"/>
+          <!-- <GoToPose goal="{livingroom_pose}"/> -->
+
+          <Speak text="Please wait here for a moment while I find a seat for you"/>
+
+          <RetryUntilSuccessful num_attempts="-1">
+            <Fallback>
+                <Sequence>
+                    <VlmQuery mode="2" text="" prompt='Look at the image and decide if there is at least ONE clearly available empty seat (a chair at a table that a guest can sit on). Output ONLY "true" or "false" in lowercase, nothing else. If unsure, output "false". Examples: image shows an empty chair at a table -> true; image shows all chairs occupied or no chairs visible -> false' generated_text="{@vlm_output}"/>
+                    <TextContainCondition text="{@vlm_output}" keyword="true"/>
+                    <!-- <Motion mode="head_stop_and_go_origin"/> -->
+                </Sequence>
+
+                <Sequence>
+                    <!-- <Motion mode="move_head"/> -->
+                    <AlwaysFailure/> 
+                </Sequence>
+            </Fallback>
+          </RetryUntilSuccessful>
+
+          <Speak text="I found an empty seat. Please sit in the middle of the sofa."/>
+
+<!-- #Scene 4. 소개 (Introduction)  -->
+          <Parallel success_count="1" failure_count="1">
+            <!-- <PersonHeadMove person="host"/> -->
+            <Sequence>
+                <VlmQuery mode="3"
+                  text=""
+                  prompt="Introduce this person to another guest who is listening. Use the name and (if provided) favorite drink, and include one short visual trait from the face. Output EXACTLY ONE natural English sentence. Do not mention photo or image."
+                  context_json='{"saved_dir":"/home/thor/face_ws/src/face_data/{@person_name}","person_name":"{@person_name}","favorite_drink":"{@favorite_drink}"}'
+                  generated_text="{@vlm_output}" />                
+                <Speak text="{@vlm_output}"/>
+            </Sequence>
+          </Parallel>
+
+          <Parallel success_count="1" failure_count="1">
+            <!-- <PersonHeadMove person="{@person_name}"/> -->
+            <Sequence>
+                <VlmQuery mode="3"
+                  text=""
+                  prompt="Introduce this person to another guest who is listening. Use the name and (if provided) favorite drink, and include one short visual trait from the face. Output EXACTLY ONE natural English sentence. Do not mention photo or image."
+                  context_json='{"saved_dir":"/home/thor/face_ws/src/face_data/minho","person_name":"minho","favorite_drink":"cappuccino"}'
+                  generated_text="{@vlm_output}" />                
+                <Speak text="{@vlm_output}"/>
+            </Sequence>
+          </Parallel>
+
+<!-- #Scene 5. 가방 전달 (Bag Delivery to Host)  -->
+         <Speak text="Host, I have the bag from Alex. Where should I put it?"/>
+         <Listen heard_text="{@heard_text}"/>
+         <VlmQuery mode="1" text="{@heard_text}" prompt="Please make next dialog" generated_text="{@vlm_output}"/>
+         <Speak text="{@vlm_output}"/>
+
+         <Parallel success_count="1" failure_count="1">
+             <!-- <PersonFollowing/> -->
+             <RetryUntilSuccessful>
+              <Sequence>
+                  <Listen heard_text="{@heard_text}"/>
+                  <TextContainCondition text="{@heard_text}" keyword="stop"/>
+              </Sequence>
+             </RetryUntilSuccessful> 
+         </Parallel>
+ 
+         <!-- <Motion mode="drop_bag"/> -->
+         <Speak text="Task Completed"/>
+      </Sequence>
+  </BehaviorTree>
+</root>

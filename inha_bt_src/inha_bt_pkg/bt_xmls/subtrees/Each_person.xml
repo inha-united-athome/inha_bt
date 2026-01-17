@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">    
+    <BehaviorTree ID="Each_person">
+      <Sequence>
+
+          <SubTree ID="Greeting" person_name="{@person_name}"/>
+          <Script code="
+            @text := 'Thank you, ' + @person_name + ', Please Follow me, Try to stay close to my back.'"/> 
+          <Speak text="{@text}"/> 
+          <!-- <SubTree ID="GoTo" node="{@node}" lifecycle="{@lifecycle}" location="test_region"/>  -->
+
+          <!-- <SubTree ID="Favorite_drink" node="{@node}" lifecycle="{@lifecycle}"/>  -->
+
+          <!-- <SubTree ID="GoTo" node="{@node}" lifecycle="{@lifecycle}" location="test_region"/>  -->
+          <Speak text="Let me check if there is an empty seat for you. Please wait a moment."/>
+
+          <!-- <Have to add direction code/> -->
+          
+          <!-- <RetryUntilSuccessful num_attempts="-1">
+            <CheckEmptySeat/>
+          </RetryUntilSuccessful> -->
+        
+          <Vlm heard_text="" prompt="" vlm_mode="3" generated_text="{@vlm_output}"/>
+          <Speak text="{@vlm_output}"/>
+        
+      </Sequence>
+  </BehaviorTree>
+</root>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="main">
+          <Sequence>
+          <Speak text="This is a test code, please tell me your name."/>
+          <Listen heard_text="{@heard_text}"/> 
+          <Vlm heard_text="" prompt="Introduce the guest politely in 1-2 sentences." vlm_mode="4" timeout_ms="8000" generated_text="{intro_text}"/>
+          <Speak text="{@text}"/>
+        </Sequence>
+    </BehaviorTree>
+</root>
