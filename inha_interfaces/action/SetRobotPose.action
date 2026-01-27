@@ -1,0 +1,12 @@
+# Goal
+int32 mode          # 동작 모드 (1:Zero, 2:Ready, 10:Left Open ...)
+float32 delay_sec   # 동작 전 대기 시간 (초)
+
+---
+# Result
+bool success        # 성공 여부
+string error_message # 실패 시 에러 메시지
+
+---
+# Feedback
+string current_state # 현재 상태 (예: "Waiting...", "Moving...")

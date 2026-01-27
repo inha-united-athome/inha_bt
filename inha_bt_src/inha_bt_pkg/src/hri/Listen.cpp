@@ -30,11 +30,12 @@ BT::PortsList Listen::providedPorts()
 {
   return {
     BT::InputPort<rclcpp::Node::SharedPtr>("node"),
-    BT::InputPort<float>("timeout_sec", 5.0f, "Listen timeout in seconds"),
+    BT::InputPort<float>("start_timeout_sec", 5.0f, "Wait speech start timeout (sec)"),
     BT::InputPort<std::string>("action_name", "listen", "Listen action name"),
     BT::OutputPort<std::string>("heard_text")
   };
 }
+
 
 BT::NodeStatus Listen::onStart()
 {
@@ -49,7 +50,7 @@ BT::NodeStatus Listen::onStart()
     goal_handle_.reset();
   }
 
-  timeout_sec_ = getInput<float>("timeout_sec").value_or(5.0f);
+  start_timeout_sec_ = getInput<float>("start_timeout_sec").value_or(10.0f);
   const std::string action_name = getInput<std::string>("action_name").value_or("/asr/listen");
 
   client_ = rclcpp_action::create_client<ListenAction>(node_, action_name);
@@ -60,7 +61,7 @@ BT::NodeStatus Listen::onStart()
   }
 
   ListenAction::Goal goal;
-  goal.timeout_sec = timeout_sec_;
+  goal.timeout_sec = start_timeout_sec_;
 
   start_tp_ = std::chrono::steady_clock::now();
 
@@ -123,25 +124,6 @@ BT::NodeStatus Listen::onStart()
 BT::NodeStatus Listen::onRunning()
 {
   if (!finished_.load()) {
-    // BT쪽에서도 타임아웃 방어(서버 timeout과 별개로)
-    if (timeout_sec_ > 0.0f) {
-      const auto now = std::chrono::steady_clock::now();
-      const auto elapsed_ms =
-        std::chrono::duration_cast<std::chrono::milliseconds>(now - start_tp_).count();
-
-      if (elapsed_ms > static_cast<long>(timeout_sec_ * 1000.0f) + 200) {
-        GoalHandleListen::SharedPtr gh;
-        {
-          std::lock_guard<std::mutex> lk(mx_);
-          gh = goal_handle_;
-          last_error_ = "client timeout";
-          success_ = false;
-        }
-        if (gh) client_->async_cancel_goal(gh);
-        finished_.store(true);
-        return BT::NodeStatus::FAILURE;
-      }
-    }
     return BT::NodeStatus::RUNNING;
   }
 

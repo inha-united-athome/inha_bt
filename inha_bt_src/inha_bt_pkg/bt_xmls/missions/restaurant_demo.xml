@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="main">
+          <Sequence>
+          <Parallel success_count="1" failure_count="1">
+                <ExplorationAction/>
+                <Waving waving_pose_world="{w_pose}"/>
+          </Parallel>
+
+            <!-- <ExplorationSaveGoal/>
+            <ExploreTrigger cmd="init"/>
+            <WaitGoalReached/> -->
+            <GoToPose goal="{origin_pose}"/>
+
+            <!-- <ExploreTrigger cmd="return"/>
+            <WaitGoalReached/> -->
+            <GoToPose goal="{w_pose}"/>
+
+            <!-- <ExploreTrigger cmd="init"/> -->
+            <!-- <WaitGoalReached/> -->
+            <GoToPose goal="{origin_pose}"/>
+
+           </Sequence>
+    </BehaviorTree>
+</root>
+
+
+<!-- 
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="restaurnat_main">
+          <Sequence>
+            <Parallel success_count="1" failure_count="1">
+                <ExplorationAction/>
+                <Waving/>
+            </Parallel>
+
+            <WavingPoseEstimation/>
+            <GotoEstimationPose/>
+            <ExplorationSaveGoal/>
+            <Script code='@text := "May I Help you?"'/>
+            <Speak node="{@node}" text="{@text}"/>
+            <Listen node="{@node}" heard_text="{@heard_text}"/>
+            <Vlm node="{@node}" heard_text="{@heard_text}" prompt="" vlm_mode="1" generated_text="{@vlm_output}"/>
+            <Script code="@text := 'Okay, I'll get a ' + @vlm_output + 'For you. Give me one second.'"/> 
+
+            <ExploreTrigger cmd="init"/>
+            <WaitGoalReached/>
+
+            <Script code="@text := 'The customer ordered a' + @vlm_output"/> 
+            <Arm up & Gripper on & Arm down/>
+
+            <ExploreTrigger cmd="return"/>
+            <WaitGoalReached/>
+
+            <Script code="@text := 'Thank you for waiting. Here is a' + @vlm_output + 'for you. The gripper will open in three seconds.'"/> 
+            <Speak node="{@node}" text="{@text}"/>
+            <Arm up & Gripper off & Arm down/>
+
+            <ExploreTrigger cmd="init"/>
+            <WaitGoalReached/>
+            
+           </Sequence>
+    </BehaviorTree>
+</root> -->

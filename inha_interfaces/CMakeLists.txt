@@ -10,6 +10,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "action/CaptureFaceCrop.action"
   "action/WaitPerson.action"
   "action/Vlm.action"
+  "action/SetRobotPose.action"
+  "action/FollowHuman.action"
 )
 
 ament_export_dependencies(rosidl_default_runtime)

@@ -41,6 +41,8 @@ add_executable(bt_node src/bt_main.cpp
                        src/navigation/WaitGoalReached.cpp
                        src/navigation/Exploration.cpp
                        src/navigation/GoToPose.cpp
+                       src/navigation/FollowHuman.cpp
+                       src/navigation/CmdSpin.cpp
                        src/hri/Speak.cpp
                        src/hri/Listen.cpp
                        src/hri/VlmQuery.cpp
@@ -48,7 +50,9 @@ add_executable(bt_node src/bt_main.cpp
                        src/hri/ContextJsonMaker.cpp
                        src/perception/Face.cpp
                        src/perception/Waving.cpp
+                       src/manipulation/SetRobotPose.cpp
                        )
+
 
 target_link_libraries(bt_node
   yaml-cpp

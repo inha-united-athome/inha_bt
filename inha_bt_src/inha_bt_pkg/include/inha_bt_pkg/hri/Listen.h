@@ -42,7 +42,7 @@ private:
   std::string last_state_;
   std::string last_error_;
 
-  float timeout_sec_{5.0f};
+  float start_timeout_sec_{5.0f};
   std::chrono::steady_clock::time_point start_tp_;
 
   std::mutex mx_;

@@ -1,11 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root BTCPP_format="4">
+<root BTCPP_format="4">    
     <BehaviorTree ID="main">
-          <Sequence>
-          <Speak text="This is a test code, please tell me your name."/>
-          <Listen heard_text="{@heard_text}"/> 
-          <Vlm heard_text="" prompt="Introduce the guest politely in 1-2 sentences." vlm_mode="4" timeout_ms="8000" generated_text="{intro_text}"/>
+      <Sequence>
+<!-- #Scene 1. 손님 감지 및 이동 (Start) -->
+          <Speak text="I found a guest. I am going to the door."/>
+
+<!-- #Scene 2. 손님맞이 및 가방 수령 (Reception & Bag Handover) -->
+            <!-- 1) 인사 및 이름 묻기 -->
+          <Speak text="Hello! Welcome to our party. May I ask your name and your favorite drink?"/>
+          <Listen heard_text="{@heard_text}"/>
+          <Script code="@text := 'Extract ONLY the person name from the users sentence. Output ONLY the name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: My name is Minho and I like cola. -> Minho'"/>
+          <VlmQuery mode="1" text="{@heard_text}" prompt="{@text}" generated_text="{@person_name}"/>
+          <Script code="@text := 'Extract ONLY the favorite drink from the users sentence. Output ONLY the drink name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: I am Minho and I like cola. -> cola'"/>
+          <VlmQuery mode="1" text="{@heard_text}" prompt="{@text}" generated_text="{@favorite_drink}"/>
+          <Speak text="{@favorite_drink}"/>
+          <Speak text="{@person_name}"/>
+          <Speak text="Okay, I will take your picture now."/>
+          <Speak text="three, two, one!."/>
+          <Script code="
+            @text := 'Thank you, Jen, I see you are holding a bag. Let me help you with that.'"/> 
+          <Speak text="{@text}"/> 
+          <Speak text="Please place the bag in my hand."/>
+          <Speak text="Thank you. I have received the bag. Please follow me for some drinks"/>       
+          <Speak text="Thank you. wait a minute to find a sprite"/>       
+          <Speak text="I'll introduce you host. plase follow me."/>     
+          <Speak text="Please wait here for a moment while I find a seat for you"/>
+          <Speak text="There is an empty seat on the white bench to the right of the gray sofa."/>
+          <Speak text="you can seat there."/> 
+          <Speak text="Welcome Guys! I'll introduce you two together."/>
+          <Script code="
+            @text := 'Host, I have the bag from Jen . Where should I put it?'"/> 
           <Speak text="{@text}"/>
+          <Speak text="okay I'll follow you."/>
+          <Speak text="Task Completed"/>
         </Sequence>
     </BehaviorTree>
-</root>
+</root> 

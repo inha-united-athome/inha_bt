@@ -3,7 +3,9 @@
 #include <behaviortree_cpp/action_node.h>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <cmath>   // ✅ 추가
+
+#include <cmath>
+#include <string>
 
 namespace MakeNavGoal
 {
@@ -20,11 +22,19 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
-      BT::InputPort<std::string>("frame", "map"),
-      BT::InputPort<double>("x"),
-      BT::InputPort<double>("y"),
-      BT::InputPort<double>("yaw"),
-      BT::OutputPort<geometry_msgs::msg::PoseStamped>("goal")
+      // name, default, description (⚠️ 3개 인자 필요)
+      BT::InputPort<std::string>("frame", std::string("map"), "target frame"),
+
+      BT::InputPort<double>("x", "goal x"),
+      BT::InputPort<double>("y", "goal y"),
+      BT::InputPort<double>("z", 0.0, "goal z"),
+
+      BT::InputPort<double>("qx", 0.0, "quat x"),
+      BT::InputPort<double>("qy", 0.0, "quat y"),
+      BT::InputPort<double>("qz", "quat z"),
+      BT::InputPort<double>("qw", "quat w"),
+
+      BT::OutputPort<geometry_msgs::msg::PoseStamped>("goal", "PoseStamped goal")
     };
   }
 
@@ -33,23 +43,42 @@ public:
     geometry_msgs::msg::PoseStamped pose;
 
     auto frame = getInput<std::string>("frame");
-    auto x = getInput<double>("x");
-    auto y = getInput<double>("y");
-    auto yaw = getInput<double>("yaw");
-    if (!frame || !x || !y || !yaw) return BT::NodeStatus::FAILURE;
+    auto x  = getInput<double>("x");
+    auto y  = getInput<double>("y");
+    auto z  = getInput<double>("z");
+    auto qx = getInput<double>("qx");
+    auto qy = getInput<double>("qy");
+    auto qz = getInput<double>("qz");
+    auto qw = getInput<double>("qw");
+
+    if (!frame || !x || !y || !z || !qx || !qy || !qz || !qw) {
+      return BT::NodeStatus::FAILURE;
+    }
 
     pose.header.frame_id = frame.value();
-    pose.header.stamp = node_->now();
+    pose.header.stamp = node_ ? node_->now() : rclcpp::Clock().now();
+
     pose.pose.position.x = x.value();
     pose.pose.position.y = y.value();
-    pose.pose.position.z = 0.0;
+    pose.pose.position.z = z.value();
 
-    // ✅ yaw -> quaternion (roll=pitch=0)
-    const double half = yaw.value() * 0.5;
-    pose.pose.orientation.x = 0.0;
-    pose.pose.orientation.y = 0.0;
-    pose.pose.orientation.z = std::sin(half);
-    pose.pose.orientation.w = std::cos(half);
+    double ox = qx.value();
+    double oy = qy.value();
+    double oz = qz.value();
+    double ow = qw.value();
+
+    // normalize
+    const double n = std::sqrt(ox*ox + oy*oy + oz*oz + ow*ow);
+    if (n < 1e-12) {
+      if (node_) RCLCPP_WARN(node_->get_logger(), "[MakeNavGoal] Quaternion norm too small");
+      return BT::NodeStatus::FAILURE;
+    }
+    ox /= n; oy /= n; oz /= n; ow /= n;
+
+    pose.pose.orientation.x = ox;
+    pose.pose.orientation.y = oy;
+    pose.pose.orientation.z = oz;
+    pose.pose.orientation.w = ow;
 
     setOutput("goal", pose);
     return BT::NodeStatus::SUCCESS;

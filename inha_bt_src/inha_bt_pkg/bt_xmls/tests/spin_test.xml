@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="main">
+         <Sequence>
+         <CmdSpin duration_ms="11000" angular_z="0.5"  topic="/cmd_vel"/>
+         <Delay delay_msec="300000">
+           <AlwaysSuccess/>
+         </Delay>
+         </Sequence>
+    </BehaviorTree>
+</root>

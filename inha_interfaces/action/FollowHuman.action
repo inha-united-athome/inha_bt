@@ -1,0 +1,12 @@
+# action 이름 : nav/follow_human
+# Goal
+bool enable
+
+---
+# Result
+bool success
+string error_message      
+
+---
+# Feedback
+string current_state # (ex. planning, reached .. )

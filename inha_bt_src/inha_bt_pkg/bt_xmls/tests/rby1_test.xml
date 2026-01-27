@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="main">
+    <Sequence>
+          <SetRobotPose mode="2" delay_sec="2.0"/>
+<!-- 
+          <Delay delay_msec="3000">
+             <Speak text="Thank you for waiting . the drink is on the shelf right side of the coke."/>       
+          </Delay>
+
+          <SetRobotPose mode="9" delay_sec="2.0"/> -->
+      <!-- <SetRobotPose mode="5"  delay_sec="0.0"/> -->
+      <!-- <SetRobotPose mode="10" delay_sec="2.0"/>
+      <Speak text="Task Completed"/>
+      <SetRobotPose mode="2"  delay_sec="2.0"/>
+      <SetRobotPose mode="32" delay_sec="0.0"/> -->
+    </Sequence>
+  </BehaviorTree>
+</root>
+
+<!-- 71 : head reset  -->
+<!-- 10 : gripper 풀기  -->
+<!-- 30 : 양손 gripper 풀기  -->
+
+<!-- 9 : 음료 가리키기  -->
+<!-- 71 : 헤드 원점  -->
+<!-- 72 : 헤드 빈자리 찾기  -->
+<!-- 73 : 헤드 손님 보기  -->
+
+<!-- 10 : gripper 열기  -->
+<!-- 11 : gripper 닫기  -->
+<!-- 30 : 양손 gripper 풀기  -->

@@ -2,15 +2,20 @@
 <root BTCPP_format="4">
     <BehaviorTree ID="main">
         <Sequence>
+            <!-- <VlmQuery mode="2" text="" prompt='Look at the image and decide if there is at least ONE clearly available empty seat (a chair at a table that a guest can sit on). Output ONLY "true" or "false" in lowercase, nothing else. If unsure, output "false". Examples: image shows an empty chair at a table -> true; image shows all chairs occupied or no chairs visible -> false' generated_text="{@vlm_output}"/>
+            <Speak text="{@vlm_output}"/>  -->
             <Script code="@text := 'Extract ONLY the person name from the users sentence. Output ONLY the name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: My name is Minho and I like cola. -> Minho'"/>
-            <VlmQuery mode="1" text="My name is minho and my favorite drink is cappuccino" prompt="{@text}" generated_text="{@person_name}"/>
+            <VlmQuery mode="1" text="My name is Jen and my favorite drink is cappuccino" prompt="{@text}" generated_text="{@person_name}"/>
             <Script code="@text := 'Extract ONLY the favorite drink from the users sentence. Output ONLY the drink name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: I am Minho and I like cola. -> cola'"/>
-            <VlmQuery mode="1" text="My name is minho and my favorite drink is cappuccino" prompt="{@text}" generated_text="{@favorite_drink}"/>
+            <VlmQuery mode="1" text="My name is Jen and my favorite drink is cappuccino" prompt="{@text}" generated_text="{@favorite_drink}"/>
             <VlmQuery mode="2" text="" prompt='Look at the image and decide if there is at least ONE clearly available empty seat (a chair at a table that a guest can sit on). Output ONLY **true** or **false** in lowercase, nothing else. If unsure, output is false, Examples: image shows an empty chair at a table -> true image shows all chairs occupied or no chairs visible -> false' generated_text="{@vlm_output}"/>
-            <ContextJsonMaker saved_dir="/home/thor/face_ws/src/face_data/minho" person_name="minho" favorite_drink="cappuccino" context_json="{@context_json}"/>
+            <Script code="
+                @text :='/home/thor/face_ws/src/face_data/'+ @person_name +''"/> 
+            <ContextJsonMaker saved_dir="{@text}" person_name="{@person_name}" favorite_drink="{@favorite_drink}" context_json="{@context_json}"/>            
             <VlmQuery mode="3" text=""
                 prompt="Introduce this person to another guest who is listening. Use the name and (if provided) favorite drink, and include one short visual trait from the face. Output EXACTLY ONE natural English sentence. Do not mention photo or image."
-                context_json="{@context_json}" generated_text="{@vlm_output}" />         
+                context_json="{@context_json}" generated_text="{@vlm_output}" />       
+            <Speak text="{@vlm_output}"/> 
         </Sequence>
     </BehaviorTree>
 </root>

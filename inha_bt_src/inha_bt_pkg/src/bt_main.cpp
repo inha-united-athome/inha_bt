@@ -7,6 +7,9 @@
 #include "inha_bt_pkg/navigation/WaitGoalReached.h"
 #include "inha_bt_pkg/navigation/GoToPose.h"
 #include "inha_bt_pkg/navigation/MakeNavGoal.h"
+#include "inha_bt_pkg/navigation/FollowHuman.h"
+#include "inha_bt_pkg/navigation/CmdSpin.h"
+#include "inha_bt_pkg/navigation/WaitBoolTopic.hpp"
 
 //hri
 #include "inha_bt_pkg/hri/Listen.h"
@@ -19,6 +22,9 @@
 //perception
 #include "inha_bt_pkg/perception/Waving.h"
 #include "inha_bt_pkg/perception/Face.h"
+
+//manipulation
+#include "inha_bt_pkg/manipulation/SetRobotPose.h"  
 
 #include <ament_index_cpp/get_package_share_directory.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
@@ -53,6 +59,9 @@ int main(int argc, char** argv)
   Exploration::RegisterNodes(factory);
   WaitGoalReached::RegisterNodes(factory);
   MakeNavGoal::RegisterNodes(factory);
+  FollowHuman::RegisterNodes(factory);
+  CmdVelRotate::RegisterNodes(factory);
+  WaitBoolTopicBT::RegisterNodes(factory);
 
   // Perception Node
   Waving::RegisterNodes(factory);
@@ -66,6 +75,9 @@ int main(int argc, char** argv)
   ExtractWordBT::RegisterNodes(factory);
   TextContainCondition::RegisterNodes(factory);
   ContextJsonMaker::RegisterNodes(factory);
+
+  // Manipulation Node
+  SetRobotPose::RegisterNodes(factory);
 
   const std::string pkg_share = ament_index_cpp::get_package_share_directory("inha_bt_pkg");
   const std::string bt_root = pkg_share + "/bt_xmls/";
