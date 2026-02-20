@@ -27,6 +27,9 @@ find_package(inha_interfaces REQUIRED)
 include_directories(${inha_interfaces_INCLUDE_DIRS})
 find_package(rosidl_cmake REQUIRED)
 find_package(rosidl_typesupport_cpp REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 
 set(THIS_PACKAGE_DEPS
     behaviortree_cpp
@@ -42,7 +45,9 @@ add_executable(bt_node src/bt_main.cpp
                        src/navigation/Exploration.cpp
                        src/navigation/GoToPose.cpp
                        src/navigation/FollowHuman.cpp
-                       src/navigation/CmdSpin.cpp
+                       src/navigation/CmdPublish.cpp
+                       src/navigation/GetCurrentPose.cpp
+                       src/navigation/GoToPrecise.cpp
                        src/hri/Speak.cpp
                        src/hri/Listen.cpp
                        src/hri/VlmQuery.cpp
@@ -50,7 +55,18 @@ add_executable(bt_node src/bt_main.cpp
                        src/hri/ContextJsonMaker.cpp
                        src/perception/Face.cpp
                        src/perception/Waving.cpp
+                       src/perception/WavingApproach.cpp
+                       src/perception/ObjectPointcloud.cpp
+                       src/perception/ObjectSwitch.cpp
+                       src/perception/ActionFalse.cpp
+                       src/perception/VisualAlign.cpp
+                       src/perception/StartReplay.cpp
+                       src/perception/StopReplay.cpp
                        src/manipulation/SetRobotPose.cpp
+                       src/manipulation/MoveitEnable.cpp
+                       src/manipulation/ExecuteSuccessServer.cpp
+                       src/manipulation/GraspgenEnable.cpp
+                       src/utils/ServiceTrigger.cpp
                        )
 
 
@@ -70,6 +86,9 @@ ament_target_dependencies(bt_node
   sensor_msgs
   cv_bridge
   inha_interfaces
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
   )
 
 

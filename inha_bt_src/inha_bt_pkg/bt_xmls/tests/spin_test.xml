@@ -2,10 +2,25 @@
 <root BTCPP_format="4">
     <BehaviorTree ID="main">
          <Sequence>
-         <CmdSpin duration_ms="11000" angular_z="0.5"  topic="/cmd_vel"/>
-         <Delay delay_msec="300000">
-           <AlwaysSuccess/>
-         </Delay>
+            
+            <!-- 파라미터 설정 필요 -->
+            <CmdPublish topic="/cmd_vel" duration_sec="10.0" lin_x="0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/> 
+            <!-- 파라미터 설정 필요 -->
+
+            <!-- 파라미터 설정 필요 -->
+            <!-- <CmdPublish topic="/cmd_vel" duration_sec="15.0" lin_x="-0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/>  -->
+            <!-- 파라미터 설정 필요 -->
+
+            <Delay delay_msec="5000">
+                <AlwaysSuccess/>
+            </Delay>
+            <!-- <SetRobotPose mode="100" delay_sec="0.0"/> -->
+
+
+
+          <Delay delay_msec="300000">
+            <AlwaysSuccess/>
+          </Delay>
          </Sequence>
     </BehaviorTree>
 </root>

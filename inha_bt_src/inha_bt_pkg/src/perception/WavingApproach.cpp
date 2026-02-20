@@ -1,11 +1,12 @@
-// Waving.cpp
-#include "inha_bt_pkg/perception/Waving.h"
-#include <chrono>
+// WavingApproach.cpp
+#include "inha_bt_pkg/perception/WavingApproach.h"
 
+#include <chrono>
 using namespace std::chrono_literals;
 
 namespace
 {
+// ---- 공통: 요약 로그 헬퍼 ----
 static inline void BT_LOG_STATUS(
   const rclcpp::Logger& logger,
   const std::string& node_name,
@@ -23,73 +24,61 @@ static inline void BT_LOG_STATUS(
 }
 } // namespace
 
-namespace Waving
+namespace WavingApproach
 {
 
-Waving::Waving(const std::string& name, const BT::NodeConfig& config)
+WavingApproach::WavingApproach(const std::string& name, const BT::NodeConfig& config)
 : BT::StatefulActionNode(name, config)
 {
   node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
   if (!node_) {
-    throw BT::RuntimeError("Waving: missing 'node' in blackboard");
+    throw BT::RuntimeError("WavingApproach: missing 'node' in blackboard");
   }
   BT_LOG_STATUS(node_->get_logger(), this->name(), "INIT", "in(bb)", "got node from blackboard");
 }
 
-void Waving::ensureClient()
+void WavingApproach::ensureClient()
 {
   if (client_) return;
-
-  client_ = rclcpp_action::create_client<WavingAction>(node_, kActionName);
+  client_ = rclcpp_action::create_client<ApproachAction>(node_, kActionName);
   BT_LOG_STATUS(node_->get_logger(), this->name(), "READY", "out(action)",
                 std::string("client created: ") + kActionName);
 }
 
-BT::NodeStatus Waving::onStart()
+BT::NodeStatus WavingApproach::onStart()
 {
   ensureClient();
 
   printed_waiting_ = false;
   done_.store(false);
   ok_.store(false);
-  active_.store(true);
 
   {
     std::lock_guard<std::mutex> lk(mtx_);
     goal_handle_.reset();
-    last_error_.clear();
+    goal_pose_ = geometry_msgs::msg::PoseStamped{};
   }
 
   BT_LOG_STATUS(node_->get_logger(), this->name(), "START", "out(action)", "send goal(start=true)");
 
   if (!client_->wait_for_action_server(300ms)) {
-    active_.store(false);
-    {
-      std::lock_guard<std::mutex> lk(mtx_);
-      last_error_ = std::string("action server not available: ") + kActionName;
-    }
-    setOutput("error_message", last_error_);
-    BT_LOG_STATUS(node_->get_logger(), this->name(), "FAILURE", "out(action)", last_error_);
+    BT_LOG_STATUS(node_->get_logger(), this->name(), "FAILURE", "out(action)",
+                  std::string("action server not available: ") + kActionName);
     return BT::NodeStatus::FAILURE;
   }
 
-  WavingAction::Goal goal;
-  goal.start = true;
+  // ---- send trigger goal ----
+  ApproachAction::Goal goal_msg;
+  goal_msg.start = true;  // ✅ Goal: bool start
 
-  rclcpp_action::Client<WavingAction>::SendGoalOptions options;
+  rclcpp_action::Client<ApproachAction>::SendGoalOptions opt;
 
-  options.goal_response_callback =
-    [this](GoalHandleWaving::SharedPtr gh)
+  opt.goal_response_callback =
+    [this](GoalHandleApproach::SharedPtr gh)
     {
       if (!gh) {
-        {
-          std::lock_guard<std::mutex> lk(mtx_);
-          last_error_ = "goal rejected";
-        }
-        done_.store(true);
         ok_.store(false);
-        active_.store(false);
-        BT_LOG_STATUS(node_->get_logger(), this->name(), "FAILURE", "in(goal_response)", "goal rejected");
+        done_.store(true);
         return;
       }
       {
@@ -99,36 +88,38 @@ BT::NodeStatus Waving::onStart()
       BT_LOG_STATUS(node_->get_logger(), this->name(), "RUNNING", "in(goal_response)", "goal accepted");
     };
 
-  options.result_callback =
-    [this](const GoalHandleWaving::WrappedResult& result)
+  opt.result_callback =
+    [this](const GoalHandleApproach::WrappedResult& res)
     {
-      bool success_flag = false;
-      std::string err;
+        bool ok = false;
+        geometry_msgs::msg::PoseStamped fp;
 
-      // ✅ 네 액션 정의: Result{ bool success; string error_message; }
-      if (result.result) {
-        success_flag = result.result->success;
-        err = result.result->error_message;
-      } else {
-        success_flag = false;
-        err = "null result pointer";
-      }
+        // 1) 액션 레벨 결과 코드 체크
+        if (res.code != rclcpp_action::ResultCode::SUCCEEDED) {
+        ok = false;
+        } else if (res.result) {
+        // 2) 너희 Result.success 체크
+        ok = res.result->success;
+        fp = res.result->goal_pose;
+        } else {
+        ok = false;
+        }
 
-      {
+        {
         std::lock_guard<std::mutex> lk(mtx_);
-        last_error_ = err;
-      }
+        goal_pose_ = fp;
+        }
 
-      ok_.store(success_flag);
-      done_.store(true);
-      active_.store(false);
+        ok_.store(ok);
+        done_.store(true);
     };
 
-  (void)client_->async_send_goal(goal, options);
+
+  (void)client_->async_send_goal(goal_msg, opt);
   return BT::NodeStatus::RUNNING;
 }
 
-BT::NodeStatus Waving::onRunning()
+BT::NodeStatus WavingApproach::onRunning()
 {
 
   if (!done_.load()) {
@@ -140,25 +131,36 @@ BT::NodeStatus Waving::onRunning()
   }
 
   if (ok_.load()) {
+    geometry_msgs::msg::PoseStamped fp;
+    {
+      std::lock_guard<std::mutex> lk(mtx_);
+      fp = goal_pose_;
+    }
+
+    RCLCPP_INFO(
+      node_->get_logger(),
+      "[BT] %s : goal_pose frame=%s pos=(%.2f, %.2f, %.2f)",
+      this->name().c_str(),
+      fp.header.frame_id.c_str(),
+      fp.pose.position.x,
+      fp.pose.position.y,
+      fp.pose.position.z
+    );
+
+    setOutput("goal_pose", fp);
+
     BT_LOG_STATUS(node_->get_logger(), this->name(), "SUCCESS", "in(result)", "success=true");
     return BT::NodeStatus::SUCCESS;
   }
 
-  std::string err;
-  {
-    std::lock_guard<std::mutex> lk(mtx_);
-    err = last_error_.empty() ? "success=false" : last_error_;
-  }
-  setOutput("error_message", err);
-  BT_LOG_STATUS(node_->get_logger(), this->name(), "FAILURE", "in(result)", err);
+  BT_LOG_STATUS(node_->get_logger(), this->name(), "FAILURE", "in(result)", "success=false");
   return BT::NodeStatus::FAILURE;
 }
 
-void Waving::onHalted()
-{
-  active_.store(false);
 
-  GoalHandleWaving::SharedPtr gh;
+void WavingApproach::onHalted()
+{
+  GoalHandleApproach::SharedPtr gh;
   {
     std::lock_guard<std::mutex> lk(mtx_);
     gh = goal_handle_;
@@ -174,7 +176,7 @@ void Waving::onHalted()
 
 void RegisterNodes(BT::BehaviorTreeFactory& factory)
 {
-  factory.registerNodeType<Waving>("Waving");
+  factory.registerNodeType<WavingApproach>("WavingApproach");
 }
 
-} // namespace Waving
+} // namespace WavingApproach

@@ -1,65 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root BTCPP_format="4">
     <BehaviorTree ID="main">
-          <Sequence>
-          <Parallel success_count="1" failure_count="1">
-                <ExplorationAction/>
-                <Waving waving_pose_world="{w_pose}"/>
-          </Parallel>
+        <Sequence>
+<!-- #Scene 1.  감지 및 이동 (Start) -->
+            <GetCurrentPose pose="{init_pose}"/>
+            <ModifyPose in_pose="{init_pose}" dx="0.0" dy="0.0" dz="0.0" dyaw_deg="180" out_pose="{modified_pose}"/>
+            <Speak text="Hi, I'm 주모. Let me see if anyone needs help."/>
+            <Parallel success_count="1" failure_count="1">
+                    <ExplorationAction/>
+                    <Waving/>
+            </Parallel>
+            <Speak text="I found a customer. I am coming to you now."/>      
 
-            <!-- <ExplorationSaveGoal/>
-            <ExploreTrigger cmd="init"/>
-            <WaitGoalReached/> -->
-            <GoToPose goal="{origin_pose}"/>
+                <WavingApproach goal_pose="{goal_pose}"/>
 
-            <!-- <ExploreTrigger cmd="return"/>
-            <WaitGoalReached/> -->
-            <GoToPose goal="{w_pose}"/>
+            <VisualAlign />
+            <CmdPublish topic="/cmd_vel" duration_sec="3.0" lin_x="0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/>
 
-            <!-- <ExploreTrigger cmd="init"/> -->
-            <!-- <WaitGoalReached/> -->
-            <GoToPose goal="{origin_pose}"/>
 
-           </Sequence>
-    </BehaviorTree>
-</root>
+<!-- #Scene 2. Customer  -->
+
+            <Speak text="Hello. May I take your order?"/>
+            <!-- <Listen heard_text="{@heard_text}"/> -->
+            
+            <Delay delay_msec="4000">
+                <AlwaysSuccess/>
+            </Delay>
+            
+            <!-- host says : Pineapple Soda Plz. -->
+            <Speak text="Okay. I will prepare a coke for you."/>
+            <CmdPublish topic="/cmd_vel" duration_sec="3.0" lin_x="-0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/>
+            <CmdPublish topic="/cmd_vel" duration_sec="10" lin_x="0.0" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="-0.6"/>
+        
+            <GoToPose goal="{modified_pose}"/> 
+        
+            <!-- <Speak text="Bartender, I’ve received an order for a Pineapple soda." /> -->
+
+            <!-- host says : “I’ll place the tumbler on the table to your right. The Pineapple soda is on the shelf in front of you. Please serve them.” -->
+<!--             
+            <Delay delay_msec="12000">
+                <AlwaysSuccess/>
+            </Delay> -->
+
+            <!-- <Speak text="Okay. First, I will pick up the tumbler from the table on my right. Then, I will get the Pineapple Soda from the shelf in front of me. Finally, I will serve them to the customer." /> -->
+
+            <!-- 파라미터 설정 필요 -->
+            <!-- <CmdPublish topic="/cmd_vel" duration_sec="5.35" lin_x="0.0" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="-0.6"/> -->
+            <!-- 파라미터 설정 필요 -->
+
+            <!-- 파라미터 설정 필요 -->
+            <!-- <CmdPublish topic="/cmd_vel" duration_sec="8.0" lin_x="0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/>  -->
+            <!-- 파라미터 설정 필요 -->
+
+            <Speak text="I'm gonna find a coke."/>
+
+            <Delay delay_msec="60000">
+                <AlwaysSuccess/>
+            </Delay>
 
 
 <!-- 
-<?xml version="1.0" encoding="UTF-8"?>
-<root BTCPP_format="4">
-    <BehaviorTree ID="restaurnat_main">
-          <Sequence>
-            <Parallel success_count="1" failure_count="1">
-                <ExplorationAction/>
-                <Waving/>
-            </Parallel>
+            <Delay delay_msec="5000">
+                <AlwaysSuccess/>
+            </Delay> -->
+            <SetRobotPose mode="100" delay_sec="0.0"/>
 
-            <WavingPoseEstimation/>
-            <GotoEstimationPose/>
-            <ExplorationSaveGoal/>
-            <Script code='@text := "May I Help you?"'/>
-            <Speak node="{@node}" text="{@text}"/>
-            <Listen node="{@node}" heard_text="{@heard_text}"/>
-            <Vlm node="{@node}" heard_text="{@heard_text}" prompt="" vlm_mode="1" generated_text="{@vlm_output}"/>
-            <Script code="@text := 'Okay, I'll get a ' + @vlm_output + 'For you. Give me one second.'"/> 
+<!-- #Scene 2. tumbler Manipulation  -->
+            <ServiceTrigger service_name="/grounded_sam/set_enable" enable="true"/>
+            <ObjectPointcloud camera_id = "left" target_object = "bottle" /> 
+            <!-- <StartReplay rate="1.0" publish_background="true"/> -->
 
-            <ExploreTrigger cmd="init"/>
-            <WaitGoalReached/>
+            <Delay delay_msec="3000">
+                <AlwaysSuccess/>
+            </Delay>
 
-            <Script code="@text := 'The customer ordered a' + @vlm_output"/> 
-            <Arm up & Gripper on & Arm down/>
-
-            <ExploreTrigger cmd="return"/>
-            <WaitGoalReached/>
-
-            <Script code="@text := 'Thank you for waiting. Here is a' + @vlm_output + 'for you. The gripper will open in three seconds.'"/> 
-            <Speak node="{@node}" text="{@text}"/>
-            <Arm up & Gripper off & Arm down/>
-
-            <ExploreTrigger cmd="init"/>
-            <WaitGoalReached/>
+            <GraspgenEnable arm_id="left"/>
             
-           </Sequence>
+            <Delay delay_msec="3000">
+                <AlwaysSuccess/>
+            </Delay>
+ 
+            <MoveitEnable arm_id="left"/>
+
+            <!-- <ExecuteSuccessServer/> -->
+
+            <!-- 파라미터 설정 필요 -->
+            <Delay delay_msec="2000">
+                <AlwaysSuccess/>
+            </Delay>
+            <!-- 파라미터 설정 필요 -->
+
+            <SetRobotPose mode="11" delay_sec="2.0"/>
+            <!-- <ServiceTrigger service_name="/grounded_sam/set_enable" enable="false"/> -->
+<!-- #Scene 2.Cup Manipulation End -->
+
+            <!-- <ServiceTrigger service_name="/grounded_sam/set_enable" enable="true"/> -->
+            <ObjectPointcloud camera_id = "right" target_object = "coke" /> 
+            <!-- <StartReplay rate="1.0" publish_background="true"/> -->
+
+            <Delay delay_msec="3000">
+                <AlwaysSuccess/>
+            </Delay>
+
+            <GraspgenEnable arm_id="right"/>
+            
+            <Delay delay_msec="3000">
+                <AlwaysSuccess/>
+            </Delay>
+            <MoveitEnable arm_id="right"/>
+
+            <!-- <ExecuteSuccessServer/> -->
+
+            <!-- 파라미터 설정 필요 -->
+            <Delay delay_msec="2000">
+                <AlwaysSuccess/>
+            </Delay>
+            <!-- 파라미터 설정 필요 -->
+
+            <SetRobotPose mode="21" delay_sec="2.0"/>
+            <ServiceTrigger service_name="/grounded_sam/set_enable" enable="false"/>
+<!-- #Scene 3. Pineapple Juice Can Manipulation End -->
+
+            <!-- <SetRobotPose mode="200" delay_sec="0.0"/> -->
+
+            <SetRobotPose mode="200" delay_sec="0.0"/>
+
+
+            <!-- 뒤로 가기 -->
+
+            <!-- 파라미터 설정 필요 -->
+            <CmdPublish topic="/cmd_vel" duration_sec="8.0" lin_x="-0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/> 
+            <!-- 파라미터 설정 필요 -->
+
+            <Delay delay_msec="3000">
+                <AlwaysSuccess/>
+            </Delay>
+
+            <SetRobotPose mode="2" delay_sec="0.0"/>
+
+            <!-- 돌기 -->
+            <!-- 파라미터 설정 필요 -->
+            <CmdPublish topic="/cmd_vel" duration_sec="5.35" lin_x="0.0" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="-0.6"/>
+            <!-- 파라미터 설정 필요 -->
+
+            <Speak text="I've done I'll go to the Customer."/>
+
+<!-- #Scene 3. Go To Customer -->
+
+            <GoToPose goal="{goal_pose}"/> 
+            <VisualAlign />
+            <CmdPublish topic="/cmd_vel" duration_sec="2.0" lin_x="0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/>
+
+            <!-- <CmdPublish topic="/cmd_vel" duration_sec="2.0" lin_x="0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/>
+            <Speak text="Thank you. Enjoy your drink."/>
+
+
+            <CmdPublish topic="/cmd_vel" duration_sec="2.0" lin_x="-0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/>
+            <CmdPublish topic="/cmd_vel" duration_sec="7" lin_x="0.0" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.6"/>
+            <GoToPose goal="{modified_pose}"/>  -->
+
+            <!-- <SetRobotPose mode="left hands push" delay_sec="0,0" /> -->
+            <!-- <SetRobotPose mode="11" delay_sec="0,0" /> -->
+            <!-- <SetRobotPose mode="right hands push" delay_sec="0,0" />
+            <SetRobotPose mode="right_gripper_close" delay_sec="0,0" /> -->
+
+            <Delay delay_msec="100000">
+                <AlwaysSuccess/>
+            </Delay>
+
+            
+            <!-- <SetRobotPose mode="100" delay_sec="0.0"/> -->
+        </Sequence>
     </BehaviorTree>
-</root> -->
+</root>

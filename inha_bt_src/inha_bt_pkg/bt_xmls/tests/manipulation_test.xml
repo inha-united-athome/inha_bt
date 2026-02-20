@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">    
+    <BehaviorTree ID="main">
+      <Sequence>
+
+<!-- #Scene 2. tumbler Manipulation  -->
+            <!-- <Delay delay_msec="700">
+                <AlwaysSuccess/>
+            </Delay> -->
+
+            <SetRobotPose mode="100" delay_sec="0.0"/>
+
+
+            <ServiceTrigger service_name="/grounded_sam/set_enable" enable="true"/>
+            <ObjectPointcloud camera_id = "left" target_object = "bottle" /> 
+            <!-- <StartReplay rate="1.0" publish_background="true"/> -->
+
+            <Delay delay_msec="3000">
+                <AlwaysSuccess/>
+            </Delay>
+
+            <GraspgenEnable arm_id="left"/>
+            
+            <Delay delay_msec="3000">
+                <AlwaysSuccess/>
+            </Delay>
+ 
+            <MoveitEnable arm_id="left"/>
+
+            <!-- <ExecuteSuccessServer/> -->
+
+            <!-- 파라미터 설정 필요 -->
+            <Delay delay_msec="2000">
+                <AlwaysSuccess/>
+            </Delay>
+            <!-- 파라미터 설정 필요 -->
+
+            <SetRobotPose mode="11" delay_sec="2.0"/>
+            <!-- <ServiceTrigger service_name="/grounded_sam/set_enable" enable="false"/> -->
+<!-- #Scene 2.Cup Manipulation End -->
+
+            <!-- <ServiceTrigger service_name="/grounded_sam/set_enable" enable="true"/> -->
+            <ObjectPointcloud camera_id = "right" target_object = "coke" /> 
+            <!-- <StartReplay rate="1.0" publish_background="true"/> -->
+
+            <Delay delay_msec="3000">
+                <AlwaysSuccess/>
+            </Delay>
+
+            <GraspgenEnable arm_id="right"/>
+            
+            <Delay delay_msec="1000">
+                <AlwaysSuccess/>
+            </Delay>
+            <MoveitEnable arm_id="right"/>
+
+            <!-- <ExecuteSuccessServer/> -->
+
+            <!-- 파라미터 설정 필요 -->
+            <Delay delay_msec="2000">
+                <AlwaysSuccess/>
+            </Delay>
+            <!-- 파라미터 설정 필요 -->
+
+            <SetRobotPose mode="21" delay_sec="2.0"/>
+            <ServiceTrigger service_name="/grounded_sam/set_enable" enable="false"/>
+<!-- #Scene 3. Pineapple Juice Can Manipulation End -->
+
+            <!-- <SetRobotPose mode="200" delay_sec="0.0"/> -->
+
+            <SetRobotPose mode="200" delay_sec="0.0"/>
+
+            <CmdPublish topic="/cmd_vel" duration_sec="8.0" lin_x="-0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/> 
+
+            <Delay delay_msec="3000">
+                <AlwaysSuccess/>
+            </Delay>
+
+            <SetRobotPose mode="2" delay_sec="0.0"/>
+
+            <!-- 돌기 -->
+            <!-- 파라미터 설정 필요 -->
+            <CmdPublish topic="/cmd_vel" duration_sec="5.35" lin_x="0.0" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="-0.6"/>
+            <!-- 파라미터 설정 필요 -->
+
+            <Speak text="I've done I'll go to the Customer."/>
+        
+            <Delay delay_msec="1000000">
+                <AlwaysSuccess/>
+            </Delay>
+      </Sequence>
+  </BehaviorTree>
+</root>

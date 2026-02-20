@@ -1,0 +1,7 @@
+# service 이름 : /manipulation/execute/success
+# Request 
+bool result
+---
+# Response
+bool received
+string message

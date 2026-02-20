@@ -13,7 +13,7 @@
   <build_depend>rosidl_default_generators</build_depend>
   <exec_depend>rosidl_default_runtime</exec_depend>
 
-  <!-- action에서 time/builtin_interfaces 등이 필요하면 -->
+  <depend>geometry_msgs</depend>
   <depend>builtin_interfaces</depend>
 
   <member_of_group>rosidl_interface_packages</member_of_group>

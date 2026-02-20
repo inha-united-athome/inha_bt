@@ -1,0 +1,9 @@
+# service 이름 : /manipulation/graspgen/enable
+# Request
+bool enable
+---
+# Response
+bool success
+string message
+
+# 추후에 arm_id 고쳐야함.

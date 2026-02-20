@@ -1,0 +1,13 @@
+# action 이름 : perception/waving_approach
+# Goal
+bool start
+
+---
+# Result
+bool success
+string error_message
+geometry_msgs/PoseStamped goal_pose
+
+---
+# Feedback
+string current_state # (ex. planning, reached .. )

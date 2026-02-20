@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="Manipulation_recovery">
+
+    <!-- 전체 처음부터 재시도 -->
+    <RetryUntilSuccessful num_attempts="3">
+      <RecoveryNode number_of_retries="0">
+
+        <!-- ================= MAIN TRY ================= -->
+        <Sequence>
+          <ObjectPointcloud camera_id="{@decided_arm}" target_object="{@target_object}" />
+          <ServiceTrigger service_name="/manipulation/graspgen/enable" enable="true"/>
+          <MoveitEnable arm_id="{@decided_arm}"/>
+          <ExecuteSuccessServer/>
+
+          <!-- ===== VLM gate: YES면 통과, IDLE면 대기, NO면 실패 ===== -->
+          <RetryUntilSuccessful num_attempts="2">
+            <Sequence>
+              <RateController hz="1.0">
+                <VlmQuery
+                  mode="2"
+                  text=""
+                  prompt="Output exactly ONE token: YES, NO, or IDLE. Question: Is the target object securely inside the gripper? If you are unsure or cannot see clearly, output IDLE."
+                  context_json=""
+                  action_name="/vlm/query"
+                  timeout_ms="1200"
+                  generated_text="{@vlm_output}"
+                />
+              </RateController>
+
+              <!-- 3-way split -->
+              <Fallback>
+
+                <!-- YES -> gate success -->
+                <TextContainCondition text="{@vlm_output}" keyword="YES" case_insensitive="true"/>
+
+                <!-- IDLE -> keep waiting (do not fail main) -->
+                <Sequence>
+                  <TextContainCondition text="{@vlm_output}" keyword="IDLE" case_insensitive="true"/>
+                  <Sleep ms="150"/>
+                  <AlwaysFailure/>  <!-- this inner retry keeps looping -->
+                </Sequence>
+
+                <!-- NO or anything else -> fail main try (go to cleanup) -->
+                <Sequence>
+                  <AlwaysFailure/>
+                </Sequence>
+
+              </Fallback>
+            </Sequence>
+          </RetryUntilSuccessful>
+          <!-- ===== VLM gate 끝 ===== -->
+
+          <Delay delay_msec="10000">
+            <AlwaysSuccess/>
+          </Delay>
+
+          <SetRobotPose mode="{@mode_number}" delay_sec="2.0"/>
+
+          <!-- 성공 시 정리 -->
+          <ServiceTrigger service_name="/manipulation/graspgen/enable" enable="false"/>
+          <ServiceTrigger service_name="/vision/object_pointcloud" enable="false"/>
+        </Sequence>
+
+        <!-- ================= CLEANUP (MAIN 실패 시) ================= -->
+        <Sequence>
+          <ServiceTrigger service_name="/manipulation/graspgen/enable" enable="false"/>
+          <ServiceTrigger service_name="/vision/object_pointcloud" enable="false"/>
+
+          <!-- "원래 자세"로 복귀 (원하는 mode로 바꿔) -->
+          <SetRobotPose mode="100" delay_sec="1.5"/>
+
+          <AlwaysFailure/> <!-- 바깥 RetryUntilSuccessful이 전체를 처음부터 다시 -->
+        </Sequence>
+
+      </RecoveryNode>
+    </RetryUntilSuccessful>
+
+  </BehaviorTree>
+</root>

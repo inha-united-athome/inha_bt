@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">    
+    <BehaviorTree ID="Manipulation">
+      <Sequence>
+        <ServiceTrigger service_name="/grounded_sam/set_enable" enable="true"/>
+        <ObjectPointcloud camera_id = "{@decided_arm}" object = "{@target_object}" /> 
+        <ServiceTrigger service_name="/grounded_sam/set_enable" enable="false"/>
+        <StartReplay rate="1.0" publish_background="true"/>
+
+        <Delay delay_msec="3000">
+           <AlwaysSuccess/>
+        </Delay>
+
+        <GraspgenEnable arm_id="left"/>
+        <MoveitEnable arm_id="{@decided_arm}"/>
+        <ExecuteSuccessServer/>
+        <Delay delay_msec="15000">
+           <AlwaysSuccess/>
+        </Delay>
+
+        <SetRobotPose mode="11" delay_sec="2.0"/>
+        <StopReplay/>
+      </Sequence>
+  </BehaviorTree>
+</root>

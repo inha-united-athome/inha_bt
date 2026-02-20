@@ -1,0 +1,7 @@
+# service 이름 : /manipulation/graspgen/enable
+# Request 
+string arm_id
+---
+# Response
+bool success
+string message

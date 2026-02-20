@@ -1,0 +1,13 @@
+# action 이름 : vision/object_pointcloud
+# Goal
+string camera_id
+string target_object
+
+---
+# Result
+bool success
+string error_message      
+
+---
+# Feedback
+string current_state

@@ -2,14 +2,20 @@
 #include "behaviortree_cpp/behavior_tree.h"
 #include "behaviortree_cpp/bt_factory.h"
 #include "behaviortree_cpp/xml_parsing.h"
+// util
+#include "inha_bt_pkg/utils/ServiceTrigger.h"
+
 // nav
 #include "inha_bt_pkg/navigation/Exploration.h"
 #include "inha_bt_pkg/navigation/WaitGoalReached.h"
 #include "inha_bt_pkg/navigation/GoToPose.h"
 #include "inha_bt_pkg/navigation/MakeNavGoal.h"
 #include "inha_bt_pkg/navigation/FollowHuman.h"
-#include "inha_bt_pkg/navigation/CmdSpin.h"
+#include "inha_bt_pkg/navigation/CmdPublish.h"
 #include "inha_bt_pkg/navigation/WaitBoolTopic.hpp"
+#include "inha_bt_pkg/navigation/GetCurrentPose.h"
+#include "inha_bt_pkg/navigation/ModifyPose.h"
+#include "inha_bt_pkg/navigation/GoToPrecise.h"
 
 //hri
 #include "inha_bt_pkg/hri/Listen.h"
@@ -22,9 +28,19 @@
 //perception
 #include "inha_bt_pkg/perception/Waving.h"
 #include "inha_bt_pkg/perception/Face.h"
+#include "inha_bt_pkg/perception/WavingApproach.h"
+#include "inha_bt_pkg/perception/ObjectPointcloud.h"
+#include "inha_bt_pkg/perception/ObjectSwitch.h"
+#include "inha_bt_pkg/perception/ActionFalse.h"
+#include "inha_bt_pkg/perception/VisualAlign.h"
+#include "inha_bt_pkg/perception/StopReplay.h"
+#include "inha_bt_pkg/perception/StartReplay.h"
 
 //manipulation
 #include "inha_bt_pkg/manipulation/SetRobotPose.h"  
+#include "inha_bt_pkg/manipulation/MoveitEnable.h"  
+#include "inha_bt_pkg/manipulation/ExecuteSuccessServer.h"  
+#include "inha_bt_pkg/manipulation/GraspgenEnable.h"  
 
 #include <ament_index_cpp/get_package_share_directory.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
@@ -55,18 +71,32 @@ int main(int argc, char** argv)
 
   BT::BehaviorTreeFactory factory;
 
+
+  // Util Node
+  ServiceTrigger::RegisterNodes(factory);
+
   // Navigation Node
   Exploration::RegisterNodes(factory);
   WaitGoalReached::RegisterNodes(factory);
   MakeNavGoal::RegisterNodes(factory);
   FollowHuman::RegisterNodes(factory);
-  CmdVelRotate::RegisterNodes(factory);
+  CmdPublish::RegisterNodes(factory);
   WaitBoolTopicBT::RegisterNodes(factory);
+  GetCurrentPose::RegisterNodes(factory);
+  ModifyPose::RegisterNodes(factory);
+  GoToPose::RegisterNodes(factory);
+  GoToPrecise::RegisterNodes(factory); 
 
   // Perception Node
   Waving::RegisterNodes(factory);
-  GoToPose::RegisterNodes(factory);
   FaceReg::RegisterNodes(factory);
+  WavingApproach::RegisterNodes(factory);
+  SetVisionDisable::RegisterNodes(factory);
+  ObjectPointcloud::RegisterNodes(factory);
+  ActionFalse::RegisterNodes(factory);
+  VisualAlign::RegisterNodes(factory);
+  StartReplay::RegisterNodes(factory);
+  StopReplay::RegisterNodes(factory);
 
   // HRI Node
   Listen::RegisterNodes(factory);
@@ -78,6 +108,9 @@ int main(int argc, char** argv)
 
   // Manipulation Node
   SetRobotPose::RegisterNodes(factory);
+  MoveitEnable::RegisterNodes(factory);
+  ExecuteSuccessServer::RegisterNodes(factory);
+  GraspgenEnable::RegisterNodes(factory);
 
   const std::string pkg_share = ament_index_cpp::get_package_share_directory("inha_bt_pkg");
   const std::string bt_root = pkg_share + "/bt_xmls/";

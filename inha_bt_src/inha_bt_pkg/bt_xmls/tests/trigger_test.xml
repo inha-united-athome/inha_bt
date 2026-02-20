@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root BTCPP_format="4">
+<root BTCPP_format="4">    
     <BehaviorTree ID="main">
-        <Sequence>
-        <WaitBoolTopic topic="/bt/trigger"/>
-        <Delay delay_msec="300000">
-          <AlwaysSuccess/>
-        </Delay>
+      <Sequence>
+<!-- #Scene 1. 손님 감지 및 이동 (Start) -->
         </Sequence>
     </BehaviorTree>
-</root>
+</root> 

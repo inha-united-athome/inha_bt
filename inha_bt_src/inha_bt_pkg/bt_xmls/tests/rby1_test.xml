@@ -2,7 +2,7 @@
 <root BTCPP_format="4">
   <BehaviorTree ID="main">
     <Sequence>
-          <SetRobotPose mode="2" delay_sec="2.0"/>
+            <SetRobotPose mode="100" delay_sec="0.0"/>
 <!-- 
           <Delay delay_msec="3000">
              <Speak text="Thank you for waiting . the drink is on the shelf right side of the coke."/>       
@@ -18,10 +18,6 @@
   </BehaviorTree>
 </root>
 
-<!-- 71 : head reset  -->
-<!-- 10 : gripper 풀기  -->
-<!-- 30 : 양손 gripper 풀기  -->
-
 <!-- 9 : 음료 가리키기  -->
 <!-- 71 : 헤드 원점  -->
 <!-- 72 : 헤드 빈자리 찾기  -->
@@ -30,3 +26,5 @@
 <!-- 10 : gripper 열기  -->
 <!-- 11 : gripper 닫기  -->
 <!-- 30 : 양손 gripper 풀기  -->
+<!-- 32 : gripper 전원 off  -->
+<!-- 100 : 파지 자세  -->

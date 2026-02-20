@@ -1,4 +1,4 @@
-// Waving.h
+// ===== include/inha_bt_pkg/perception/ActionFalse.h =====
 #pragma once
 
 #include <behaviortree_cpp/action_node.h>
@@ -13,18 +13,18 @@
 
 #include <inha_interfaces/action/waving.hpp>
 
-namespace Waving
+namespace ActionFalse
 {
 
-class Waving : public BT::StatefulActionNode
+class ActionFalse : public BT::StatefulActionNode
 {
 public:
-  Waving(const std::string& name, const BT::NodeConfig& config);
+  ActionFalse(const std::string& name, const BT::NodeConfig& config);
 
   static BT::PortsList providedPorts()
   {
     return {
-      BT::OutputPort<std::string>("error_message", "Action error message when failed")
+      BT::OutputPort<std::string>("error_message", "ignored in this node (always success)")
     };
   }
 
@@ -33,27 +33,27 @@ public:
   void onHalted() override;
 
 private:
-  using WavingAction = inha_interfaces::action::Waving;
-  using GoalHandleWaving = rclcpp_action::ClientGoalHandle<WavingAction>;
+  using Act = inha_interfaces::action::Waving;
+  using GoalHandle = rclcpp_action::ClientGoalHandle<Act>;
+
+  void ensureClient();
 
   rclcpp::Node::SharedPtr node_;
-  rclcpp_action::Client<WavingAction>::SharedPtr client_;
+  rclcpp_action::Client<Act>::SharedPtr client_;
 
   std::atomic_bool active_{false};
   std::atomic_bool done_{false};
   std::atomic_bool ok_{false};
 
   std::mutex mtx_;
-  GoalHandleWaving::SharedPtr goal_handle_;
+  GoalHandle::SharedPtr goal_handle_;
   std::string last_error_;
 
   bool printed_waiting_{false};
 
-  void ensureClient();
-
-  static constexpr const char* kActionName = "perception/waving";
+  static constexpr const char* kActionName = "/perception/waving";
 };
 
 void RegisterNodes(BT::BehaviorTreeFactory& factory);
 
-} // namespace Waving
+} // namespace ActionFalse

@@ -17,11 +17,11 @@
           <Script code="@text := 'Extract ONLY the favorite drink from the users sentence. Output ONLY the drink name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: I am Minho and I like cola. -> cola'"/>
           <VlmQuery mode="1" text="{@heard_text}" prompt="{@text}" generated_text="{@favorite_drink}"/>
           
+          
           <!-- 2) 알림: 사진 촬영 안내 -->
           <Speak text="Okay, I will take your picture now."/>
           <SetRobotPose mode="73" delay_sec="0.0"/>
-          <Speak text="three, two, one!."/>
-          <Speak text="1"/>
+          <Speak text="three, two, one!. cheese"/>
           <FaceSaver person_name="{@person_name}" num_images="5" timeout_ms="3000"/>
 
           <!-- <Script code="

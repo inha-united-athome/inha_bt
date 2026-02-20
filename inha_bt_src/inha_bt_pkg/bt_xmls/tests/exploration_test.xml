@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="main">
+        <Sequence>
+            
+            <GetCurrentPose pose="{init_pose}"/>
+            <ModifyPose in_pose="{init_pose}" dx="0.0" dy="0.0" dz="0.0" dyaw_deg="180" out_pose="{modified_pose}"/>
+            <!-- <Speak text="Let me see if anyone needs help."/> -->
+            <Parallel success_count="1" failure_count="1">
+                    <ExplorationAction/>
+                    <Waving/>
+            </Parallel>
+            <!-- <Speak text="I found a customer. I am coming to you."/> -->
+
+            <WavingApproach goal_pose="{goal_pose}"/>
+            <VisualAlign />
+            <CmdPublish topic="/cmd_vel" duration_sec="3.0" lin_x="0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/>
+
+        </Sequence>
+    </BehaviorTree>
+</root>

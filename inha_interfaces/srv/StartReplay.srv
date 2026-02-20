@@ -1,0 +1,8 @@
+# Request
+float64 rate            # Hz (0이면 기본값 사용)
+bool publish_background # 배경도 퍼블리시할지
+
+---
+# Response
+bool success
+string message

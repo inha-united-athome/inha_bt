@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="main">
+        <Sequence>
+            <GetCurrentPose pose="{init_pose}"/>
+            <ModifyPose in_pose="{init_pose}" dx="0.0" dy="0.0" dz="0.0" dyaw_deg="180" out_pose="{modified_pose}"/>
+
+            <Delay delay_msec="30000">
+              <AlwaysSuccess/>
+            </Delay>
+<!--             
+            <CmdPublish topic="/cmd_vel" duration_sec="4.5" lin_x="0.5" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/>
+            <CmdPublish topic="/cmd_vel" duration_sec="2.7" lin_x="0.0" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="-0.6"/>
+            <CmdPublish topic="/cmd_vel" duration_sec="6.0" lin_x="0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/>
+            <CmdPublish topic="/cmd_vel" duration_sec="10" lin_x="0.0" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="-0.6"/> -->
+
+            <GoToPose goal="{modified_pose}"/> 
+
+            <CmdPublish topic="/cmd_vel" duration_sec="5.35" lin_x="0.0" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="-0.6"/>
+            <CmdPublish topic="/cmd_vel" duration_sec="9.0" lin_x="0.1" lin_y="0.0" lin_z="0.0" ang_x="0.0" ang_y="0.0" ang_z="0.0"/>
+
+                
+            <Delay delay_msec="300000">
+                <AlwaysSuccess/>
+            </Delay>
+
+        </Sequence>
+    </BehaviorTree>
+</root>
