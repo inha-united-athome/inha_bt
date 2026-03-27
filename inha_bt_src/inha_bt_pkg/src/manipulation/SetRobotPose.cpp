@@ -11,7 +11,7 @@ namespace SetRobotPose
 SetRobotPoseBT::SetRobotPoseBT(const std::string& name, const BT::NodeConfig& config)
 : BT::StatefulActionNode(name, config)
 {
-  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
   client_ = rclcpp_action::create_client<ActionT>(node_, "/rby1/set_pose");
 }
 

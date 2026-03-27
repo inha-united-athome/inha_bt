@@ -3,11 +3,12 @@
     <BehaviorTree ID="main">
       <Sequence>
 <!-- #Scene 1. 손님 감지 및 이동 (Start) -->
-            <ExecuteSuccessServer/>
+            <!-- <ExecuteSuccessServer/> -->
           
-            <Speak text="Got it"/>
+            <Speak text="This is a test code."/>
             <!-- <Listen heard_text="{@heard_text}"/> -->
-            
+            <Listen heard_text="{@heard_text}"/>
+            <Speak text="{@heard_text}"/>
             <Delay delay_msec="2000">
                 <AlwaysSuccess/>
             </Delay>

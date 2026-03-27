@@ -16,7 +16,7 @@ public:
   MakeNavGoal(const std::string& name, const BT::NodeConfig& config)
   : BT::SyncActionNode(name, config)
   {
-    node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+    node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
   }
 
   static BT::PortsList providedPorts()

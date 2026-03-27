@@ -59,13 +59,13 @@
 
           <!-- 성공 시 정리 -->
           <ServiceTrigger service_name="/manipulation/graspgen/enable" enable="false"/>
-          <ServiceTrigger service_name="/vision/object_pointcloud" enable="false"/>
+          <ServiceTrigger service_name="/detect_object" enable="false"/>
         </Sequence>
 
         <!-- ================= CLEANUP (MAIN 실패 시) ================= -->
         <Sequence>
           <ServiceTrigger service_name="/manipulation/graspgen/enable" enable="false"/>
-          <ServiceTrigger service_name="/vision/object_pointcloud" enable="false"/>
+          <ServiceTrigger service_name="/detect_object" enable="false"/>
 
           <!-- "원래 자세"로 복귀 (원하는 mode로 바꿔) -->
           <SetRobotPose mode="100" delay_sec="1.5"/>

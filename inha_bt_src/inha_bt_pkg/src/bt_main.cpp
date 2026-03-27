@@ -14,8 +14,10 @@
 #include "inha_bt_pkg/navigation/CmdPublish.h"
 #include "inha_bt_pkg/navigation/WaitBoolTopic.hpp"
 #include "inha_bt_pkg/navigation/GetCurrentPose.h"
+#include "inha_bt_pkg/navigation/IsGoalNearby.h"
 #include "inha_bt_pkg/navigation/ModifyPose.h"
 #include "inha_bt_pkg/navigation/GoToPrecise.h"
+#include "inha_bt_pkg/navigation/Approach.h"
 
 //hri
 #include "inha_bt_pkg/hri/Listen.h"
@@ -38,6 +40,7 @@
 
 //manipulation
 #include "inha_bt_pkg/manipulation/SetRobotPose.h"  
+#include "inha_bt_pkg/manipulation/SetHeadPose.h"
 #include "inha_bt_pkg/manipulation/MoveitEnable.h"  
 #include "inha_bt_pkg/manipulation/ExecuteSuccessServer.h"  
 #include "inha_bt_pkg/manipulation/GraspgenEnable.h"  
@@ -62,12 +65,13 @@ int main(int argc, char** argv)
   black_board->set("node", node);
   black_board->set("text", "None");
   black_board->set("prompt", "None");
+  black_board->set("target", "None");
   black_board->set("heard_text", "None");
   black_board->set("person_name", "None");
   black_board->set("favorite_drink", "None");
   black_board->set("vlm_output", "None");
   black_board->set("context_json", "None");
-
+  black_board->set("approach_target", "None");
 
   BT::BehaviorTreeFactory factory;
 
@@ -83,9 +87,11 @@ int main(int argc, char** argv)
   CmdPublish::RegisterNodes(factory);
   WaitBoolTopicBT::RegisterNodes(factory);
   GetCurrentPose::RegisterNodes(factory);
+  IsGoalNearby::RegisterNodes(factory);
   ModifyPose::RegisterNodes(factory);
   GoToPose::RegisterNodes(factory);
   GoToPrecise::RegisterNodes(factory); 
+  Approach::RegisterNodes(factory);
 
   // Perception Node
   Waving::RegisterNodes(factory);
@@ -108,6 +114,7 @@ int main(int argc, char** argv)
 
   // Manipulation Node
   SetRobotPose::RegisterNodes(factory);
+  SetHeadPose::RegisterNodes(factory);
   MoveitEnable::RegisterNodes(factory);
   ExecuteSuccessServer::RegisterNodes(factory);
   GraspgenEnable::RegisterNodes(factory);

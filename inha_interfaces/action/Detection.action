@@ -1,4 +1,4 @@
-# action 이름 : vision/object_pointcloud
+# action 이름 : /detect_object
 # Goal
 string camera_id
 string target_object

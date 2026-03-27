@@ -46,7 +46,7 @@ static inline void publish_n_times(
 ExplorationAction::ExplorationAction(const std::string& name, const BT::NodeConfig& config)
   : BT::StatefulActionNode(name, config)
 {
-  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
   pub_resume_ = node_->create_publisher<std_msgs::msg::Bool>("/explore/resume", 10);
 
   // 생성 시에는 “현재 진행중”이 아니니 조용히 두거나, 필요하면 READY 1줄만
@@ -94,7 +94,7 @@ void ExplorationAction::onHalted()
 ExplorationSaveGoal::ExplorationSaveGoal(const std::string& name, const BT::NodeConfig& config)
   : BT::SyncActionNode(name, config)
 {
-  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
   pub_save_ = node_->create_publisher<std_msgs::msg::Bool>("/explore/save", 10);
 }
 
@@ -120,7 +120,7 @@ BT::NodeStatus ExplorationSaveGoal::tick()
 ExploreTrigger::ExploreTrigger(const std::string& name, const BT::NodeConfig& config)
   : BT::SyncActionNode(name, config)
 {
-  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
   pub_init_   = node_->create_publisher<std_msgs::msg::Bool>("/explore/init", 10);
   pub_return_ = node_->create_publisher<std_msgs::msg::Bool>("/explore/return", 10);
 }

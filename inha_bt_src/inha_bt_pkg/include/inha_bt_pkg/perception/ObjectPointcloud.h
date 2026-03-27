@@ -23,7 +23,8 @@ public:
   {
     return {
       BT::InputPort<std::string>("camera_id", "right", "camera/arm id (e.g., left/right)"),
-      BT::InputPort<std::string>("target_object", "", "target object name (e.g., Sprite, cup)")
+      BT::InputPort<std::string>("target_object", "", "target object name (e.g., Sprite, cup)"),
+      BT::InputPort<std::string>("action_name", "/detect_object", "Detection action server name")
     };
   }
 
@@ -32,7 +33,6 @@ public:
   void onHalted() override;
 
 private:
-  // ✅ msg type 이름 변경
   using ActionT = inha_interfaces::action::Detection;
   using GoalHandleT = rclcpp_action::ClientGoalHandle<ActionT>;
 
@@ -46,11 +46,9 @@ private:
   GoalHandleT::SharedPtr goal_handle_;
 
   bool printed_waiting_{false};
+  std::string action_name_;
 
-  void ensureClient();
-
-  // ✅ action server name 유지 (앞에 / 포함 OK)
-  static constexpr const char* kActionName = "/grounded_sam_detection";
+  void ensureClient(const std::string& action_name);
 };
 
 void RegisterNodes(BT::BehaviorTreeFactory& factory);

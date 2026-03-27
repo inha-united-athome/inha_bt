@@ -38,7 +38,7 @@ public:
   SimpleActionBT(const std::string& name, const BT::NodeConfig& cfg)
   : BT::StatefulActionNode(name, cfg)
   {
-    node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+    node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("@node");
   }
 
 protected:

@@ -24,7 +24,7 @@ Speak::Speak(const std::string& name, const BT::NodeConfig& config)
     : BT::StatefulActionNode(name, config),
       goal_sent_(false), done_(false), success_(false)
 {
-    node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+    node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
 }
 
 BT::PortsList Speak::providedPorts()

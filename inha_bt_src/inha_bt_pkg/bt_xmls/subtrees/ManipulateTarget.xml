@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">   
+    <BehaviorTree ID="ManipulateTarget">
+      <RetryUntilSuccessful num_attempts="3">
+        <Fallback>
+          <Sequence>
+            <Script code="@arm_prompt := 'Look at the current camera image and decide which arm should be used to grasp ' + @target + '. Output exactly left or right in lowercase only. If unsure, output unknown.'"/>
+            <VlmQuery mode="2" text="" prompt="{@arm_prompt}" generated_text="{@vlm_arm_output}"/>
+            <Script code="@decided_arm := @vlm_arm_output"/>
+
+            <ObjectPointcloud camera_id="head" target_object="{@target}"/>
+
+            <Delay delay_msec="3000">
+              <AlwaysSuccess/>
+            </Delay>
+
+            <GraspgenEnable arm_id="{@decided_arm}"/>
+
+            <Delay delay_msec="3000">
+              <AlwaysSuccess/>
+            </Delay>
+
+            <MoveitEnable arm_id="{@decided_arm}"/>
+
+            <Delay delay_msec="2000">
+              <AlwaysSuccess/>
+            </Delay>
+
+            <Script code="@grasp_prompt := 'Look at the current camera image and decide whether the robot has successfully grasped ' + @target + '. Output exactly yes or no in lowercase only. If unsure, output no.'"/>
+            <VlmQuery mode="2" text="" prompt="{@grasp_prompt}" generated_text="{@vlm_grasp_output}"/>
+            <TextContainCondition text="{@vlm_grasp_output}" keyword="yes" case_insensitive="true"/>
+          </Sequence>
+
+          <Sequence>
+            <SetRobotPose mode="11" delay_sec="2.0"/>
+            <AlwaysFailure/>
+          </Sequence>
+        </Fallback>
+      </RetryUntilSuccessful>
+  </BehaviorTree>
+</root>

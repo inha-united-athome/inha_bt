@@ -29,25 +29,25 @@ namespace ObjectPointcloud
 ObjectPointcloud::ObjectPointcloud(const std::string& name, const BT::NodeConfig& config)
 : BT::StatefulActionNode(name, config)
 {
-  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
   if (!node_) {
     throw BT::RuntimeError("ObjectPointcloud: missing 'node' in blackboard");
   }
   BT_LOG_STATUS(node_->get_logger(), this->name(), "INIT", "in(bb)", "got node from blackboard");
 }
 
-void ObjectPointcloud::ensureClient()
+void ObjectPointcloud::ensureClient(const std::string& action_name)
 {
-  if (client_) return;
-  client_ = rclcpp_action::create_client<ActionT>(node_, kActionName);
-  BT_LOG_STATUS(node_->get_logger(), this->name(), "READY", "out(action)",
-                std::string("client created: ") + kActionName);
+  if (!client_ || action_name_ != action_name) {
+    client_ = rclcpp_action::create_client<ActionT>(node_, action_name);
+    action_name_ = action_name;
+    BT_LOG_STATUS(node_->get_logger(), this->name(), "READY", "out(action)",
+                  std::string("client created: ") + action_name_);
+  }
 }
 
 BT::NodeStatus ObjectPointcloud::onStart()
 {
-  ensureClient();
-
   printed_waiting_ = false;
   done_.store(false);
   ok_.store(false);
@@ -60,6 +60,9 @@ BT::NodeStatus ObjectPointcloud::onStart()
   // ✅ 포트명 변경: object -> target_object
   const std::string camera_id      = getInput<std::string>("camera_id").value_or("right");
   const std::string target_object  = getInput<std::string>("target_object").value_or("");
+  const std::string action_name    = getInput<std::string>("action_name").value_or("/detect_object");
+
+  ensureClient(action_name);
 
   if (target_object.empty()) {
     BT_LOG_STATUS(node_->get_logger(), this->name(), "FAILURE", "in(port)", "target_object is empty");
@@ -67,11 +70,12 @@ BT::NodeStatus ObjectPointcloud::onStart()
   }
 
   BT_LOG_STATUS(node_->get_logger(), this->name(), "START", "out(action)",
-                "send goal camera_id=" + camera_id + ", target_object=" + target_object);
+                "send goal action_name=" + action_name + ", camera_id=" + camera_id +
+                  ", target_object=" + target_object);
 
   if (!client_->wait_for_action_server(300ms)) {
     BT_LOG_STATUS(node_->get_logger(), this->name(), "FAILURE", "out(action)",
-                  std::string("action server not available: ") + kActionName);
+                  std::string("action server not available: ") + action_name);
     return BT::NodeStatus::FAILURE;
   }
 

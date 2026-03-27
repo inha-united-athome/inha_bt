@@ -8,7 +8,7 @@ namespace MoveitEnable
 MoveitEnable::MoveitEnable(const std::string& name, const BT::NodeConfig& config)
 : BT::StatefulActionNode(name, config)
 {
-  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
   if (!node_) {
     throw BT::RuntimeError("MoveitEnable: missing 'node' in blackboard");
   }

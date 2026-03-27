@@ -11,7 +11,7 @@ ContextJsonMaker::ContextJsonMaker(const std::string& name, const BT::NodeConfig
   // optional: node handle for logging (if provided in blackboard)
   if (config.blackboard) {
     try {
-      node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+      node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
     } catch (...) {
       // node_ is optional
     }

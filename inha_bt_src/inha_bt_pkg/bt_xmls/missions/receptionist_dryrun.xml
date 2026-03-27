@@ -5,7 +5,7 @@
 <!-- #Scene 1. 손님 감지 및 이동 (Start) -->
           <WaitPersonDetected/>
           <Speak text="I found a guest. I am going to the door."/>
-          <MakeNavGoal frame="map" x="-2.82" y="2.75" z="0.0" qx="0.0" qy="0.0" qz="-0.02" qw="1.00" goal="{door_pose}"/>           
+          <MakeNavGoal frame="map" x="0.15" y="-3.84" z="0.0" qx="0.0" qy="0.0" qz="0.96" qw="0.29" goal="{door_pose}"/>           
           <GoToPose goal="{door_pose}"/> 
 
 <!-- #Scene 2. 손님맞이 및 가방 수령 (Reception & Bag Handover) -->
@@ -17,51 +17,38 @@
           <Script code="@text := 'Extract ONLY the favorite drink from the users sentence. Output ONLY the drink name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: I am Minho and I like cola. -> cola'"/>
           <VlmQuery mode="1" text="{@heard_text}" prompt="{@text}" generated_text="{@favorite_drink}"/>
           
-          
           <!-- 2) 알림: 사진 촬영 안내 -->
           <Speak text="Okay, I will take your picture now."/>
-          <SetRobotPose mode="73" delay_sec="0.0"/>
+          <!-- <SetRobotPose mode="73" delay_sec="0.0"/> -->
           <Speak text="three, two, one!. cheese"/>
           <FaceSaver person_name="{@person_name}" num_images="5" timeout_ms="3000"/>
 
           <!-- <Script code="
             @text := 'Thank you, ' + @person_name + ', I see you are holding a bag. Let me help you with that.'"/>  -->
-          <SetRobotPose mode="71" delay_sec="0.0"/>
+          <!-- <SetRobotPose mode="71" delay_sec="0.0"/>
           <Script code="
-            @text := 'Thank you, Jen, I see you are holding a bag. Let me help you with that.'"/> 
+            @text := 'Thank you, Jen, I see you are holding a bag. Let me help you with that.'"/>  -->
 
-          <Speak text="{@text}"/> 
-          <SetRobotPose mode="4" delay_sec="0.0"/>
-          <Speak text="Please place the bag in my hand."/>
-          <SetRobotPose mode="11" delay_sec="2.0"/>
-          <SetRobotPose mode="5" delay_sec="1.0"/>
+          <!-- <Speak text="{@text}"/>  -->
+          <!-- <SetRobotPose mode="4" delay_sec="0.0"/> -->
+          <!-- <Speak text="Please place the bag in my hand."/> -->
+          <!-- <SetRobotPose mode="11" delay_sec="2.0"/> -->
+          <!-- <SetRobotPose mode="5" delay_sec="1.0"/> -->
+          <!-- <Speak text="Thank you. I have received the bag. I'll introduce you host. plase follow me."/>        -->
 
 <!-- #Scene 3. 안내 및 착석 (Guiding & Seating)  -->
-          <Speak text="Thank you. I have received the bag. Please follow me for some drinks"/>       
-          <CmdSpin duration_ms="5500" angular_z="0.5"  topic="/cmd_vel"/>
-          <MakeNavGoal frame="map" x="-5.92" y="-1.63" z="0.0" qx="0.0" qy="0.0" qz="-0.77" qw="0.63" goal="{drink_pose}"/>           
-          <GoToPose goal="{drink_pose}"/> 
-
-
-          <Speak text="Thank you. wait a minute to find a sprite"/>       
-
-          <Delay delay_msec="3000">
-             <Speak text="Thank you for waiting . the sprite is on the shelf right side of the coke."/>       
-          </Delay>
-   
-          <SetRobotPose mode="9" delay_sec="2.0"/>
-          <SetRobotPose mode="5" delay_sec="0.0"/>
-          <Speak text="I'll introduce you host. plase follow me."/>     
-          
-          <CmdSpin duration_ms="11000" angular_z="0.5"  topic="/cmd_vel"/>
-          <MakeNavGoal frame="map" x="1.600" y="1.6937" z="0.0" qx="0.0" qy="0.0" qz="0.467" qw="0.884" goal="{livingroom_pose}"/>           
+          <!-- <CmdSpin duration_ms="11000" angular_z="0.5"  topic="/cmd_vel"/> -->
+          <MakeNavGoal frame="map" x="6.832" y="-2.039" z="0.0" qx="0.0" qy="0.0" qz="0.292" qw="0.956" goal="{livingroom_pose}"/>           
           <GoToPose goal="{livingroom_pose}"/> 
           
           <Speak text="Please wait here for a moment while I find a seat for you"/>
-          <SetRobotPose mode="72" delay_sec="0.0"/>
-         
-          <!-- <RetryUntilSuccessful num_attempts="-1">
-            <Fallback>
+          <Delay delay_msec="1000">
+            <SetRobotPose mode="3" delay_sec="0.0"/>
+          </Delay>
+
+          <RetryUntilSuccessful num_attempts="-1">
+            <Fallback><!-- #Scene 3. 안내 및 착석 (Guiding & Seating)  -->
+
                 <Sequence>
                     <VlmQuery mode="2" text="" prompt='Look at the image and decide if there is at least ONE clearly available empty seat (a chair at a table that a guest can sit on). Output ONLY "true" or "false" in lowercase, nothing else. If unsure, output "false". Examples: image shows an empty chair at a table -> true; image shows all chairs occupied or no chairs visible -> false' generated_text="{@vlm_output}"/>
                     <TextContainCondition text="{@vlm_output}" keyword="true"/>
@@ -71,19 +58,22 @@
                     <AlwaysFailure/> 
                 </Sequence>
             </Fallback>
-          </RetryUntilSuccessful> -->
+          </RetryUntilSuccessful>
           
           <Delay delay_msec="1500">
-            <Speak text="There is an empty seat on the white bench to the right of the gray sofa."/>
-          </Delay>
+            <Sequence>
+             <VlmQuery mode="2" text="" prompt='Describe where is an empty seat by short sentence' generated_text="{@vlm_output}"/>
+             <Speak text="{@vlm_output}"/>
+            </Sequence>
+           </Delay>
 
 
           <!-- <VlmQuery mode="2" text="" prompt='Describe where is an empty seat by short sentence ' generated_text="{@vlm_output}"/> -->
           <!-- <Speak text="{@vlm_output}"/>  -->
-          <SetRobotPose mode="6" delay_sec="0.0"/>
-          <Speak text="you can seat there."/> 
-          <SetRobotPose mode="5" delay_sec="0.0"/>
-          <SetRobotPose mode="71" delay_sec="2.0"/>
+          <!-- <SetRobotPose mode="6" delay_sec="0.0"/> -->
+          <!-- <Speak text="you can seat there."/>  -->
+          <!-- <SetRobotPose mode="5" delay_sec="0.0"/> -->
+          <!-- <SetRobotPose mode="71" delay_sec="2.0"/> -->
           <Delay delay_msec="3000">
             <Speak text="Welcome Guys! I'll introduce you two together."/>
           </Delay>
@@ -95,13 +85,13 @@
             <Sequence>
               <Script code="
                 @text :='/home/thor/face_ws/src/face_data/'+ @person_name +''"/> 
-              <ContextJsonMaker saved_dir="/home/thor/face_ws/src/face_data/Jen" person_name="Jen" favorite_drink="sprite" context_json="{@context_json}"/>
+              <ContextJsonMaker saved_dir="{@text}" person_name="{@person_name}" favorite_drink="{@favorite_drink}" context_json="{@context_json}"/>
               <VlmQuery mode="3"
                 text=""
                 prompt="Introduce this person to another guest who is listening. Please be positive. please be concrete. Jen is a man. Never call him a woman. Person's gender is man. DHe is guest of the party. Person's Use the name and (if provided) favorite drink, and include one short visual trait from the face. Output EXACTLY ONE natural English sentence. Make it funny and start by -this is ~~-"
                 context_json="{@context_json}"
                 generated_text="{@vlm_output}" />                
-              <SetRobotPose mode="6" delay_sec="0.0"/>
+              <!-- <SetRobotPose mode="6" delay_sec="0.0"/> -->
               <Speak text="{@vlm_output}"/>
             </Sequence>
           </Parallel>
@@ -117,12 +107,12 @@
                   prompt="Introduce this person to another guest who is listening. Please be positive. please be concrete. Person's gender is man. He is host of the party. Person's Use the name and (if provided) favorite drink, and include one short visual trait from the face. Output EXACTLY ONE natural English sentence. Make it funny and start by -this is ~~-"
                   context_json="{@context_json}"
                   generated_text="{@vlm_output}" />  
-                <SetRobotPose mode="7" delay_sec="0.0"/>              
+                <!-- <SetRobotPose mode="7" delay_sec="0.0"/>               -->
                 <Speak text="{@vlm_output}"/> 
             </Sequence>
           </Parallel>
 
-          <SetRobotPose mode="5" delay_sec="0.0"/>              
+          <!-- <SetRobotPose mode="5" delay_sec="0.0"/>               -->
 
 
 <!-- #Scene 5. 가방 전달 (Bag Delivery to Host)  --> 
@@ -137,7 +127,7 @@
          <Delay delay_msec="2500">
              <Speak text="okay I'll follow you."/>
          </Delay>
-         <CmdSpin duration_ms="11000" angular_z="0.5"  topic="/cmd_vel"/>
+         <!-- <CmdSpin duration_ms="11000" angular_z="0.5"  topic="/cmd_vel"/> -->
 
 
          <Parallel success_count="1" failure_count="2">
@@ -148,12 +138,12 @@
             </Sequence>
           </RetryUntilSuccessful>
          </Parallel>
- 
+<!--  
          <SetRobotPose mode="8" delay_sec="3.0"/>
          <SetRobotPose mode="10" delay_sec="1.0"/>
          <Speak text="Task Completed"/>
          <SetRobotPose mode="2" delay_sec="2.0"/>
-         <SetRobotPose mode="32" delay_sec="0.0"/>
+         <SetRobotPose mode="32" delay_sec="0.0"/> -->
       </Sequence>
   </BehaviorTree>
 </root>

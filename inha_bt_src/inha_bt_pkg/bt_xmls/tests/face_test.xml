@@ -3,8 +3,8 @@
     <BehaviorTree ID="main">
         <Sequence>
         <!-- <Speak text="Okay, I will take your picture now. Please look at me."/> -->
-        <Speak text="three, two, one!"/>
-        <Speak text="1"/>
+        <!-- <Speak text="three, two, one!"/> -->
+        <!-- <Speak text="1"/> -->
         <WaitPersonDetected/>
         <Speak text="Take Picture "/>
         <FaceSaver person_name="Jen" num_images="5" timeout_ms="3000"/>

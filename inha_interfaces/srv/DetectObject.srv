@@ -1,0 +1,8 @@
+# service 이름 : /detect_object
+# Request
+bool start
+string[] target
+
+---
+# Response
+bool success

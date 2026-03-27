@@ -9,7 +9,7 @@ namespace ActionFalse
 ActionFalse::ActionFalse(const std::string& name, const BT::NodeConfig& config)
 : BT::StatefulActionNode(name, config)
 {
-  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
   ensureClient();
 }
 

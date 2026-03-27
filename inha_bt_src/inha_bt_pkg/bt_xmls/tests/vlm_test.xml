@@ -4,18 +4,65 @@
         <Sequence>
             <!-- <VlmQuery mode="2" text="" prompt='Look at the image and decide if there is at least ONE clearly available empty seat (a chair at a table that a guest can sit on). Output ONLY "true" or "false" in lowercase, nothing else. If unsure, output "false". Examples: image shows an empty chair at a table -> true; image shows all chairs occupied or no chairs visible -> false' generated_text="{@vlm_output}"/>
             <Speak text="{@vlm_output}"/>  -->
-            <Script code="@text := 'Extract ONLY the person name from the users sentence. Output ONLY the name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: My name is Minho and I like cola. -> Minho'"/>
+            <!-- <Script code="@text := 'Extract ONLY the person name from the users sentence. Output ONLY the name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: My name is Minho and I like cola. -> Minho'"/>
             <VlmQuery mode="1" text="My name is Jen and my favorite drink is cappuccino" prompt="{@text}" generated_text="{@person_name}"/>
             <Script code="@text := 'Extract ONLY the favorite drink from the users sentence. Output ONLY the drink name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: I am Minho and I like cola. -> cola'"/>
-            <VlmQuery mode="1" text="My name is Jen and my favorite drink is cappuccino" prompt="{@text}" generated_text="{@favorite_drink}"/>
-            <VlmQuery mode="2" text="" prompt='Look at the image and decide if there is at least ONE clearly available empty seat (a chair at a table that a guest can sit on). Output ONLY **true** or **false** in lowercase, nothing else. If unsure, output is false, Examples: image shows an empty chair at a table -> true image shows all chairs occupied or no chairs visible -> false' generated_text="{@vlm_output}"/>
-            <Script code="
+            <VlmQuery mode="1" text="My name is Jen and my favorite drink is cappuccino" prompt="{@text}" generated_text="{@favorite_drink}"/> -->
+            <!-- <VlmQuery mode="2" text="" prompt='Look at the image and decide if there is at least ONE clearly available empty seat (a chair at a table that a guest can sit on). Output ONLY **true** or **false** in lowercase, nothing else. If unsure, output is false, Examples: image shows an empty chair at a table -> true image shows all chairs occupied or no chairs visible -> false' generated_text="{@vlm_output}"/> -->
+            <!-- <Script code="@text := 'Extract ONLY the person name from the users sentence. Output ONLY the name (no extra words, no punctuation, no quotes). If missing output exactly: unknown. Example: My name is Minho and I like cola. -> Minho'"/>
+            <VlmQuery mode="1" text="My name is Jen and my favorite drink is cappuccino" prompt="{@text}" generated_text="{@person_name}"/> -->
+            <!-- <VlmQuery mode="2" text="" prompt='Look at the image and tell me how many people are in the image. describe that person' generated_text="{@vlm_output}"/> -->
+            <!-- <Script code="@text := 'TASK: Break down the user command into a logical sequence of subtasks.
+            ACTION CATEGORIES:
+            1. Navigation: Move_To(loc), Follow()
+            2. Perception: Search_Person(desc), Search_Object(obj), Count_Person(desc), Count_Object(obj), Vision_Ask(query)
+            3. Manipulation: Pickup(obj), Place_On(loc), Give_To()
+            4. Communication: Answer(), What_Day(), What_Time(), What_Tomorrow()
+
+            SUBTASK SEQUENCE RULES (CRITICAL):
+            1. [Locate]: Before searching for, counting, picking up, or describing a person or object, you MUST use Move_To(loc) first when the location is given or implied.
+            2. [Search First]: Before Pickup(obj), you MUST use Search_Object(obj). Before interacting with a person, you SHOULD use Search_Person(desc) when needed.
+            3. [People Tasks]: Commands involving a named person or a person description should use Search_Person(desc) after moving to the relevant place.
+            4. [Reporting]: If the command asks to tell, report, describe, or answer with a result, the final steps MUST be Move_To(operator) | Answer().
+            5. [Direct Info]: For time/date requests such as current time, today, or tomorrow, use What_Time(), What_Day(), or What_Tomorrow(). If the command explicitly asks to tell the operator, finish with Move_To(operator) | Answer().
+            6. [Vision Questions]: Use Vision_Ask(query) for visual properties such as person information, gestures, poses, or object comparison questions like biggest, smallest, heaviest, or lightest.
+            7. [Delivery]: For bring/give tasks, first find and pick up the object, then find the target person if needed, then Give_To().
+            8. Output Format: Action1 | Action2 | Action3 ... (Output ONLY the sequence, no extra text).
+
+            EXAMPLES:
+            - tell me how many cleaning supplies there are on the side table -> Move_To(side table) | Count_Object(cleaning supplies) | Move_To(operator) | Answer()
+            - grab the coke from the kitchen and give it to Minho -> Move_To(kitchen) | Search_Object(coke) | Pickup(coke) | Search_Person(Minho) | Give_To()
+            - tell me the gesture of the person in the living room -> Move_To(living room) | Search_Person(person) | Vision_Ask(gesture of the person) | Move_To(operator) | Answer()
+            - what time is it -> What_Time()
+            - meet Robin in the hallway and tell me the day of the month -> Move_To(hallway) | Search_Person(Robin) | What_Day() | Move_To(operator) | Answer()
+            '"/> -->
+            <Script code="@target := 'red bowl'"/>
+            <Script code="@arm_prompt := 'Look at the current camera image and evaluate graspability of ' + @target + '. Output exactly one digit only: 1 if the target is visible and clearly graspable, 2 if the target is visible but the scene is not feasible or not safe for grasping, 3 if the target is not visible in the image. Consider occlusion, collision risk, object pose, reachability, and gripper approach clearance. Do not output any extra text.'"/>
+            <VlmQuery mode="2" text="" prompt="{@arm_prompt}" generated_text="{@vlm_arm_output}"/>
+
+<!-- 
+            <VlmQuery mode="1" 
+                    text=" meet Carlos in the office and follow them to the bedside table" 
+                    prompt="{@text}" 
+                    generated_text="{@vlm_output}"/>  
+            <Speak text="{@vlm_output}"/>    
+
+            <VlmQuery mode="1" 
+                    text=" meet Carlos in the office and follow them to the bedside table" 
+                    prompt="{@text}" 
+                    generated_text="{@vlm_output}"/>  
+                     -->
+                           
+            <!-- <VlmQuery mode="2" text="" prompt='Look at the image and tell me how many people are in the image.' generated_text="{@vlm_output}"/>
+            <VlmQuery mode="2" text="" prompt='Look at the image and tell me how many people are in the image.' generated_text="{@vlm_output}"/> -->
+            <!-- <Speak text="{@vlm_output}"/> -->
+            <!-- <Script code="
                 @text :='/home/thor/face_ws/src/face_data/'+ @person_name +''"/> 
             <ContextJsonMaker saved_dir="{@text}" person_name="{@person_name}" favorite_drink="{@favorite_drink}" context_json="{@context_json}"/>            
             <VlmQuery mode="3" text=""
                 prompt="Introduce this person to another guest who is listening. Use the name and (if provided) favorite drink, and include one short visual trait from the face. Output EXACTLY ONE natural English sentence. Do not mention photo or image."
                 context_json="{@context_json}" generated_text="{@vlm_output}" />       
-            <Speak text="{@vlm_output}"/> 
+            <Speak text="{@vlm_output}"/>  -->
         </Sequence>
     </BehaviorTree>
 </root>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="IsTargetDetected">
+    <Parallel success_count="1" failure_count="1">
+      <RetryUntilSuccessful num_attempts="-1">
+        <Sequence>
+          <Script code="scan_prompt := 'Look at the current camera image and detect ' + @target + '. Output exactly yes or no in lowercase only. If unsure, output no.'"/>
+          <VlmQuery mode="2" text="" prompt="{scan_prompt}" generated_text="{vlm_scan_output}"/>
+          <TextContainCondition text="{vlm_scan_output}" keyword="yes" case_insensitive="true"/>
+        </Sequence>
+      </RetryUntilSuccessful>
+
+      <SubTree ID="HeadScanCycle"/>
+    </Parallel>
+  </BehaviorTree>
+
+  <BehaviorTree ID="HeadScanCycle">
+    <Sequence>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>
+      <SetHeadPose head_0="20.0" head_1="0.0" duration="1.0"/>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>
+      <SetHeadPose head_0="0.0" head_1="0.0" duration="1.0"/>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>
+      <SetHeadPose head_0="-20.0" head_1="0.0" duration="1.0"/>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>
+      <SetHeadPose head_0="-20.0" head_1="25.0" duration="1.0"/>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>
+      <SetHeadPose head_0="0.0" head_1="25.0" duration="1.0"/>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>       
+      <SetHeadPose head_0="20.0" head_1="25.0" duration="1.0"/>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>
+      <SetHeadPose head_0="20.0" head_1="50.0" duration="1.0"/>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>
+      <SetHeadPose head_0="0.0" head_1="50.0" duration="1.0"/>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>
+      <SetHeadPose head_0="-20.0" head_1="50.0" duration="1.0"/>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>
+      <SetHeadPose head_0="0.0" head_1="0.0" duration="5.0"/>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>                          
+    </Sequence>
+  </BehaviorTree>
+</root>

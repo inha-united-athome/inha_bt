@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <include path="../subtrees/IsTargetDetected.xml"/>
+  <BehaviorTree ID="main">
+    <Sequence>
+      <!-- <Script code="@target := 'side table'"/>
+      <SubTree ID="IsTargetDetected"/> -->
+      <Script code="@target := 'milk'"/>
+      <Script code="@arm_prompt := 'Look at the current camera image and decide which arm should be used to grasp ' + @target + '. Output exactly left or right in lowercase only. If unsure, output unknown.'"/>
+      <VlmQuery mode="2" text="" prompt="{@arm_prompt}" generated_text="{@vlm_arm_output}"/>
+      <Script code="@decided_arm := @vlm_arm_output"/>
+      <Delay delay_msec="1500">
+        <AlwaysSuccess/>
+      </Delay>
+    </Sequence>
+  </BehaviorTree>
+</root>

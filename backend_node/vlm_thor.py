@@ -77,10 +77,9 @@ class VLMActionServer(Node):
         self.create_timer(1.0, self.timer_debug)  # 1초마다 수신 상태 로그
 
         # ---- LLM ----
-        self.llm_api_url = "http://192.168.50.189:11111"
-        self.llm_api_key = "ollama"
-        self.llm_api_model_name = "llava:7b"
-
+        self.llm_api_url = "http://localhost:8000"
+        self.llm_api_key = "inha-united"  # vLLM은 아무 문자열이나 넣어도 됩니다
+        self.llm_api_model_name = "/workspace/Qwen3-VL-8B-Instruct"
         # Busy (동시 goal 방지)
         self._busy = False
 
@@ -433,8 +432,8 @@ class VLMActionServer(Node):
                     {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}},
                 ]},
             ],
-            "max_tokens": 200,
-            "temperature": 0.2,
+            "max_tokens": 100,
+            "temperature": 0.1,
             "top_p": 0.9,
             "stream": False,
         }

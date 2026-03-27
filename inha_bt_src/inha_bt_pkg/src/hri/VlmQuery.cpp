@@ -60,13 +60,13 @@ static inline void VLM_LOG(
 VlmBT::VlmBT(const std::string& name, const BT::NodeConfig& config)
 : BT::StatefulActionNode(name, config)
 {
-  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
 }
 
 BT::PortsList VlmBT::providedPorts()
 {
   return {
-    BT::InputPort<int>("mode", 1, "1=text, 2=live_image+prompt, 3=context_json"),
+    BT::InputPort<int>("mode", 1, "1=text, 2=head_live_image+prompt, 3=context_json, 4=right_live_image+prompt"),
     BT::InputPort<std::string>("text", ""),
     BT::InputPort<std::string>("prompt", ""),
     BT::InputPort<std::string>("context_json", ""),

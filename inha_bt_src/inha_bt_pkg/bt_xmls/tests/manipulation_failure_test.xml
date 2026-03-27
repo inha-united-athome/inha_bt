@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="main">
+        <Sequence>
+            <!-- <VlmQuery mode="2" text="" prompt='Look at the image and decide if there is at least ONE clearly available empty seat (a chair at a table that a guest can sit on). Output ONLY "true" or "false" in lowercase, nothing else. If unsure, output "false". Examples: image shows an empty chair at a table -> true; image shows all chairs occupied or no chairs visible -> false' generated_text="{@vlm_output}"/>
+            <Speak text="{@vlm_output}"/>  -->
+
+            <VlmQuery 
+                mode="4" 
+                text="You are a robot monitoring system checking the gripper status via hand camera." 
+                prompt="Observe the robot gripper in the image. If there is any object successfully held between the gripper fingers, output '1'. If the gripper is empty or completely closed with nothing inside, output '2'. If the view is too blurry, dark, or obstructed to confirm the status, output '3'. Respond with strictly a single digit (1, 2, or 3) without any extra text." 
+                generated_text="{@vlm_output}"
+            />
+
+
+
+            <!-- <Script code='@object := "coke"'/> -->
+            <!-- <VlmQuery mode="2" 
+                text="You are a precise robot vision scoring system for RoboCup@Home, specialized in beverage retrieval." 
+                prompt="### INSTRUCTION
+                Analyze the head camera image to evaluate the graspability of the 'coke'. 
+                You must follow a 'Step-by-Step' reasoning process to ensure accuracy, then provide the final score.
+
+                ### STEP-BY-STEP ANALYSIS
+                1. Object Detection: Is a 'coke' can or bottle present in the frame?
+                2. Obstacle Check: Are there other items (e.g., milk, water, or shelf edges) blocking a 10cm clear path for the robot's gripper to reach the 'coke'?
+                3. Position Check: Is the 'coke' standing upright and stable? Is it close enough to the edge for a safe grasp?
+
+                ### SCORING RULE
+                - Output '1' (Clear): The 'coke' is fully visible, no obstacles within the grasping trajectory, and in a stable upright position.
+                - Output '2' (Obstructed/Risk): The 'coke' is visible, but partially hidden by other objects, lying down, or positioned too deep to reach safely.
+                - Output '3' (Not Found): No 'coke' is detected in the current scene.
+
+                ### OUTPUT FORMAT
+                [Reasoning]: (Brief 1-sentence analysis of the coke's status)
+                [Result]: (Respond with ONLY a single digit: 1, 2, or 3)
+
+                Begin." 
+                generated_text="{@vlm_output}"/> -->
+            <!-- <VlmQuery mode="2" text="You are a robot vision system evaluating object graspability." prompt="Analyze the image from the head camera and locate the '{@object}'. If the '{@object}' is clearly visible, unobstructed, and safe to grasp, output '1'. If it is visible but obstructed, blocked by other items, or in a bad position to grasp, output '2'. If the '{@object}' is not visible in the scene, output '3'. Respond with strictly a single digit (1, 2, or 3) and do not provide any extra explanation." generated_text="{@vlm_output}"/> -->
+            <!-- <Speak text="{@vlm_output}"/> -->
+        </Sequence>
+    </BehaviorTree>
+</root>

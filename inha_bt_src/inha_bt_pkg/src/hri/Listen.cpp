@@ -22,7 +22,7 @@ static inline void BT_LOG_STATUS(
 Listen::Listen(const std::string& name, const BT::NodeConfig& config)
 : BT::StatefulActionNode(name, config)
 {
-  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
   client_ = rclcpp_action::create_client<ListenAction>(node_, "listen");
 }
 

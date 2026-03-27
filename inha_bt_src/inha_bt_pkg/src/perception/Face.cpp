@@ -87,7 +87,7 @@ void WaitPersonDetected::onHalted()
 Mapstore::Mapstore(const std::string& name, const BT::NodeConfig& cfg)
 : BT::SyncActionNode(name, cfg)
 {
-  try { node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node"); }
+  try { node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("@node"); }
   catch(...) { node_.reset(); }
 }
 

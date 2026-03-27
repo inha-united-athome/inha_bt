@@ -42,7 +42,7 @@ static constexpr const char* IO_STATUS =
 WaitGoalReached::WaitGoalReached(const std::string& name, const BT::NodeConfig& config)
   : BT::StatefulActionNode(name, config)
 {
-  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
   clock_ = node_->get_clock();
 
   sub_status_ = node_->create_subscription<action_msgs::msg::GoalStatusArray>(

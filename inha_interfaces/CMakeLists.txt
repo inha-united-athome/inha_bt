@@ -17,12 +17,15 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "action/WavingApproach.action"
   "action/Detection.action"
   "action/VisualAlign.action"
+  "action/Approach.action"
+  "action/SetHeadPose.action"
   "srv/SetEnable.srv"
   "srv/ExecuteSuccess.srv"
   "srv/MoveitEnable.srv"
   "srv/GraspgenEnable.srv"
   "srv/StartReplay.srv"
   "srv/StopReplay.srv"
+  "srv/DetectObject.srv"
 
 
   DEPENDENCIES builtin_interfaces geometry_msgs

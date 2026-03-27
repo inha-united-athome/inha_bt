@@ -35,7 +35,7 @@ static inline std::string goalToStr(const geometry_msgs::msg::PoseStamped& g)
 GoToPose::GoToPose(const std::string& name, const BT::NodeConfig& config)
 : BT::StatefulActionNode(name, config)
 {
-  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("node");
+  node_ = config.blackboard->get<rclcpp::Node::SharedPtr>("@node");
   // 생성로그는 원하면 남기고, 아니면 빼도 됨(스팸 줄이려면 주석)
   // BT_LOG_STATUS(node_->get_logger(), name, "READY", "action:/navigate_to_pose");
 }

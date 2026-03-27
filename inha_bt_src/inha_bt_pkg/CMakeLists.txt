@@ -48,6 +48,7 @@ add_executable(bt_node src/bt_main.cpp
                        src/navigation/CmdPublish.cpp
                        src/navigation/GetCurrentPose.cpp
                        src/navigation/GoToPrecise.cpp
+                       src/navigation/Approach.cpp
                        src/hri/Speak.cpp
                        src/hri/Listen.cpp
                        src/hri/VlmQuery.cpp
@@ -63,6 +64,7 @@ add_executable(bt_node src/bt_main.cpp
                        src/perception/StartReplay.cpp
                        src/perception/StopReplay.cpp
                        src/manipulation/SetRobotPose.cpp
+                       src/manipulation/SetHeadPose.cpp
                        src/manipulation/MoveitEnable.cpp
                        src/manipulation/ExecuteSuccessServer.cpp
                        src/manipulation/GraspgenEnable.cpp

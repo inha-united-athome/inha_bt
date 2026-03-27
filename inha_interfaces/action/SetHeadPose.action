@@ -1,0 +1,13 @@
+# action 이름 : /rby1/set_head_pose
+# Goal (목표 각도 및 도달 시간)
+float64 head_0     # 좌우 회전 (Pan)
+float64 head_1     # 상하 끄덕임 (Tilt)
+float64 duration   # 이동에 걸리는 시간 (초)
+
+---
+# Result
+bool success
+string error_message
+
+---
+# Feedback

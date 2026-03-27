@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">    
+  <include path="./IsTargetDetected.xml"/>
+  <BehaviorTree ID="NavigateToTarget">
+      <Sequence>
+        <Fallback>
+          <Sequence>
+            <MakeNavGoal frame="map" x="3.96" y="1.58" z="0.0" qx="0.0" qy="0.0" qz="-0.40" qw="0.92" goal="{target_pose}"/>
+            <GoToPose goal="{target_pose}"/>
+          </Sequence>
+          <IsGoalNearby goal="{target_pose}" threshold="0.3" amcl_topic="/amcl_pose" distance="{goal_dist}"/>
+        </Fallback>
+
+        <SubTree ID="IsTargetDetected"/>
+
+        <SetHeadPose head_0="0.0" head_1="0.0" duration="4.0"/>
+
+        <Approach main_target="{@approach_target}" action_name="/approach" service_name="/detect_object"/>
+        
+        <SubTree ID="IsTargetDetected"/>
+      </Sequence>
+  </BehaviorTree>
+</root>
